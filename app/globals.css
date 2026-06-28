@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  background: #f6f8fb;
+  color: #0b0f16;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* soft "stadium daylight" wash */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(1000px 560px at 8% -10%, rgba(10, 160, 110, 0.10), transparent 60%),
+    radial-gradient(880px 520px at 100% -6%, rgba(37, 99, 235, 0.07), transparent 55%),
+    #f6f8fb;
+}
+
+@layer components {
+  .glass {
+    @apply rounded-2xl border border-hair bg-white shadow-card;
+  }
+  .hair {
+    @apply border-hair;
+  }
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-hair bg-white px-2.5 py-1 text-xs font-medium;
+  }
+  .tnum {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-shield px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-shield2;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-hair bg-white px-5 py-2.5 text-sm font-semibold text-ink transition hover:bg-panel2;
+  }
+  .eyebrow {
+    @apply inline-flex items-center gap-2 rounded-full border border-hair bg-white px-3 py-1 text-xs font-medium text-mut shadow-sm;
+  }
+}
+
+*::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+*::-webkit-scrollbar-thumb {
+  background: rgba(12, 18, 32, 0.14);
+  border-radius: 9px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}

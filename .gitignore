@@ -1,0 +1,12 @@
+node_modules/
+.next/
+out/
+dist/
+.env
+.env.local
+*.log
+logs/
+.DS_Store
+agent-key.json
+.vercel
+next-env.d.ts
