@@ -10,6 +10,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "agent": "tsx scripts/agent.ts",
+    "live": "tsx scripts/live.ts",
     "sweep": "tsx scripts/sweep.ts",
     "backtest": "tsx scripts/backtest.ts",
     "demo": "tsx scripts/agent.ts --demo",

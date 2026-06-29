@@ -29,9 +29,9 @@ const STEPS = [
 const FEATURES = [
   { t: "~400 ms reprice", d: "Suspend, reprice, and reopen when a goal is confirmed. Verification and anchoring run in parallel and never block the reprice." },
   { t: "Courtsider Cam", d: "A side-by-side comparison of a broadcast-delayed book and Catenaccio, with the dollars leaked on each — a measured figure from a calibrated attacker." },
-  { t: "Deterministic model", d: "Time-decaying Poisson with a Dixon-Coles correction, calibrated to the market consensus and unit-tested." },
+  { t: "Signals from the model", d: "The same fair value that prices the book flags model-vs-market value and sharp consensus moves — live, and over MCP." },
   { t: "Risk and resilience", d: "Exposure caps, a drawdown kill-switch, real fees, and SSE reconnect with sequence-gap backfill." },
-  { t: "On-chain verification", d: "Resolve any fill to its TxLINE Merkle proof and check it against the on-chain root." },
+  { t: "Verifiable settlement", d: "Verify any fill against its TxLINE Merkle proof, and settle every market against the on-chain score via Txoracle validate_stat." },
   { t: "MCP server", d: "Exposes the agent's signals as tools another agent can call." },
 ];
 

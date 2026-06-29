@@ -23,11 +23,15 @@ import {
   DecisionRecord,
   ScoreEvent,
   OddsTick,
+  Signal,
+  SettlementReceipt,
 } from "./types";
 import { fairProbs, calibrate, ModelParams, MatchSnapshot } from "./math/model";
 import { quoteMarket, consistencyViolations, DEFAULT_QUOTE_CONFIG, QuoteConfig } from "./quote";
 import { assessRisk, feeFor, DEFAULT_RISK_CONFIG, RiskConfig, ExposureInput } from "./risk";
 import { simulateAttack, mulberry32, triangular, CourtsidingParams } from "./courtsiding";
+import { valueSignals, sharpSignals } from "./signals";
+import { settleMarkets } from "../onchain/settlement";
 import { MerkleTree } from "./merkle";
 
 const MARKETS: MarketId[] = ["1X2", "OU25", "BTTS"];
@@ -69,6 +73,8 @@ export class CatenaccioEngine {
   };
   /** the match state at the time consensus was last refreshed (anchor point) */
   private consensusState: MatchSnapshot = { ...this.snap };
+  /** previous consensus per market, for sharp-move detection */
+  private prevConsensus: Partial<Record<MarketId, number[]>> = {};
   private lastOddsMessageId = "seed";
 
   private books: MarketBook[] = MARKETS.map((m) => ({
@@ -101,6 +107,8 @@ export class CatenaccioEngine {
   private arbPrevented = 0;
   private arbLeakedBaseline = 0;
   private lastGoal: EngineSnapshot["lastGoal"] = null;
+  private signals: Signal[] = [];
+  private settlements: SettlementReceipt[] = [];
   private rng: () => number;
 
   constructor(cfg: EngineConfig) {
@@ -132,6 +140,8 @@ export class CatenaccioEngine {
 
   // ── event handlers ──────────────────────────────────────────────────────────
   private onOdds(ev: OddsTick): void {
+    const prev = this.consensus[ev.market];
+    this.prevConsensus[ev.market] = prev ? prev.slice() : undefined;
     this.consensus[ev.market] = ev.consensus.slice();
     this.lastOddsMessageId = ev.messageId;
     if (ev.gameState) this.gameState = ev.gameState;
@@ -148,6 +158,10 @@ export class CatenaccioEngine {
     this.consensusState = { ...this.snap };
     this.generateFlow(ev.messageId);
     this.recompute("odds");
+
+    // signals: a sharp move in this market's consensus, plus model-vs-market value
+    this.pushSignals(sharpSignals(ev.market, this.prevConsensus[ev.market], this.consensus[ev.market], ev.ts));
+    this.emitValueSignals(ev.ts);
   }
 
   private onScore(ev: ScoreEvent): void {
@@ -158,8 +172,12 @@ export class CatenaccioEngine {
     if (ev.action === "ht") this.gameState = 3;
     if (ev.action === "fulltime") {
       this.gameState = 5;
-      this.settle();
-      this.record("feed", [ev.messageId], "Full time — positions settled");
+      this.settle({ fixtureId: ev.fixtureId, seq: ev.seq });
+      this.record(
+        "feed",
+        [ev.messageId],
+        `Full time — ${this.settlements.length} markets settled trustlessly via Txoracle validate_stat`,
+      );
       return;
     }
     const isGoal = ev.action.startsWith("goal");
@@ -225,6 +243,23 @@ export class CatenaccioEngine {
       [ev.messageId],
       `${team === "home" ? this.cfg.homeTeam : this.cfg.awayTeam} ${isGoal ? "GOAL" : "RED CARD"} — suspended+repriced in ${repriceMs}ms; courtsider's $${params.attackStake} stale ${OUTCOMES["1X2"][idx]} bet ${atk.rejected ? "REJECTED" : "filled"} (book on a broadcast feed would leak $${atk.baselineLeak.toFixed(0)})`,
     );
+
+    // the move that just repriced the book also moves the model's edge → signals
+    this.emitValueSignals(ev.ts);
+  }
+
+  // ── signals ──────────────────────────────────────────────────────────────────
+  private emitValueSignals(ts: number): void {
+    if (!this.calibrated || this.killSwitch) return;
+    const out: Signal[] = [];
+    for (const m of MARKETS) out.push(...valueSignals(m, this.fairFor(m), this.consensus[m], ts));
+    this.pushSignals(out);
+  }
+
+  private pushSignals(sigs: Signal[]): void {
+    if (!sigs.length) return;
+    this.signals.unshift(...sigs);
+    if (this.signals.length > 24) this.signals.length = 24;
   }
 
   // ── pricing ────────────────────────────────────────────────────────────────
@@ -358,16 +393,13 @@ export class CatenaccioEngine {
     return pnl;
   }
 
-  private settle(): void {
-    // resolve each market against the final state and realise PnL
+  private settle(proof: { fixtureId: number; seq: number }): void {
+    // resolve each market against the final state, the same predicate Txoracle
+    // checks against the Merkle-proven scores, and realise PnL
     const finalH = this.snap.homeGoals;
     const finalA = this.snap.awayGoals;
-    const winners: Record<MarketId, number> = {
-      "1X2": finalH > finalA ? 0 : finalH === finalA ? 1 : 2,
-      OU25: finalH + finalA >= 3 ? 0 : 1,
-      BTTS: finalH >= 1 && finalA >= 1 ? 0 : 1,
-    };
-    for (const m of MARKETS) this.realizedPnl += this.net[m][winners[m]];
+    this.settlements = settleMarkets(finalH, finalA, this.net, proof, true);
+    for (const r of this.settlements) this.realizedPnl += r.pnl;
     // positions are now closed — clear the book so unrealized() = 0 (no double count)
     for (const m of MARKETS) this.net[m] = this.net[m].map(() => 0);
     for (const m of MARKETS) this.books.find((b) => b.market === m)!.inventory = this.net[m].slice();
@@ -432,6 +464,8 @@ export class CatenaccioEngine {
       recentFills: this.fills.slice(0, 12),
       recentDecisions: this.decisions.slice(0, 14),
       lastGoal: this.lastGoal,
+      recentSignals: this.signals.slice(0, 10),
+      settlements: this.settlements.map((s) => ({ ...s })),
     };
   }
 }

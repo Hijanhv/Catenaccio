@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useReplayEngine } from "./useReplayEngine";
 import { LogoMark, Wordmark } from "./Logo";
 import { SensitivityChart } from "./SensitivityChart";
-import { MARKET_LABEL, MarketBook, Fill, EngineSnapshot } from "@/lib/engine/types";
+import { MARKET_LABEL, MarketBook, Fill, EngineSnapshot, Signal, SettlementReceipt } from "@/lib/engine/types";
 import { verifyMerkleProof } from "@/lib/engine/merkle";
 import { hashHex } from "@/lib/engine/math/sha256";
 
@@ -49,10 +49,12 @@ export default function Dashboard() {
           <Feed snap={snap} onVerify={setVerifyFill} />
         </div>
 
-        {/* right: pnl, risk, sensitivity */}
+        {/* right: signals → pnl → risk → settlement → sensitivity (the agent's lifecycle) */}
         <div className="flex flex-col gap-5">
+          <SignalsPanel snap={snap} />
           <PnlPanel snap={snap} net={net} />
           <RiskPanel snap={snap} />
+          <SettlementPanel snap={snap} />
           <Panel title="Latency-arb defended" hint="measured, not staged">
             <SensitivityChart avgLeakPerGoal={avgLeakPerGoal} repriceMs={snap.lastRepriceMs ?? 400} />
             <p className="mt-2 text-[11px] leading-relaxed text-mut">
@@ -269,6 +271,91 @@ function RiskPanel({ snap }: { snap: EngineSnapshot }) {
         <span className="chip text-mut">data-gap suspend</span>
       </div>
     </Panel>
+  );
+}
+
+/* ─────────────────────────────── Signals (prediction) ─────────────────────────────── */
+function SignalsPanel({ snap }: { snap: EngineSnapshot }) {
+  const x = snap.books.find((b) => b.market === "1X2");
+  const top = x ? x.quotes.reduce((a, b) => (b.fair > a.fair ? b : a), x.quotes[0]) : null;
+  return (
+    <Panel title="Signals" hint="model vs market">
+      {top && (
+        <div className="mb-3">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-mut">Live win probability</span>
+            <span className="tnum text-ink">{top.outcome} {pct(top.fair)}</span>
+          </div>
+          <div className="mt-2 flex h-2 overflow-hidden rounded-full bg-panel2">
+            {x!.quotes.map((q) => (
+              <div
+                key={q.outcome}
+                title={`${q.outcome} ${pct(q.fair)}`}
+                style={{ width: `${q.fair * 100}%`, background: q.outcome === "Home" ? "#0AA06E" : q.outcome === "Draw" ? "#98A1B0" : "#7C3AED" }}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+      <div className="flex max-h-48 flex-col gap-1.5 overflow-y-auto pr-1">
+        {snap.recentSignals.length === 0 && <div className="text-xs text-mut">Watching for model-vs-market divergence…</div>}
+        {snap.recentSignals.map((s, i) => (
+          <SignalRow key={`${s.ts}-${i}`} s={s} />
+        ))}
+      </div>
+    </Panel>
+  );
+}
+
+function SignalRow({ s }: { s: Signal }) {
+  const color = s.kind === "sharp" ? "text-ink" : (s.edgePct ?? 0) > 0 ? "text-shield" : "text-gold";
+  const tag = s.kind === "sharp" ? "sharp" : "value";
+  return (
+    <div className="flex items-center gap-2 text-xs leading-snug">
+      <span className={`shrink-0 rounded px-1.5 py-0.5 text-[9px] uppercase tracking-wider ${s.kind === "sharp" ? "bg-panel2 text-mut" : "bg-shield/10 text-shield"}`}>{tag}</span>
+      <span className={color}>{s.detail}</span>
+      <span className="ml-auto text-[10px] text-mut2">{MARKET_LABEL[s.market].split(" ")[0]}</span>
+    </div>
+  );
+}
+
+/* ─────────────────────────────── Settlement ─────────────────────────────── */
+function SettlementPanel({ snap }: { snap: EngineSnapshot }) {
+  const settled = snap.settlements.length > 0;
+  return (
+    <Panel title="Settlement" hint="trustless · validate_stat">
+      {!settled ? (
+        <div className="text-xs leading-relaxed text-mut">
+          At full time each market resolves against TxLINE&apos;s Merkle-proven final score through Txoracle&apos;s{" "}
+          <span className="font-mono text-ink">validate_stat</span> — no trusted oracle, no manual grading. Positions
+          then settle on-chain via <span className="font-mono text-ink">settle_trade</span>.
+        </div>
+      ) : (
+        <div className="flex flex-col gap-2">
+          {snap.settlements.map((r) => (
+            <SettlementRow key={r.market} r={r} />
+          ))}
+          <div className="mt-1 text-[10px] text-mut2">
+            resolved by Txoracle <span className="font-mono">{snap.settlements[0].program.slice(0, 10)}…</span> against fixture #{snap.settlements[0].txlineProof.fixtureId}
+          </div>
+        </div>
+      )}
+    </Panel>
+  );
+}
+
+function SettlementRow({ r }: { r: SettlementReceipt }) {
+  return (
+    <div className="rounded-lg border border-hair bg-panel2/40 px-3 py-2">
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-medium text-ink">{MARKET_LABEL[r.market]}</span>
+        <span className="chip border-shield/40 text-shield">✓ {r.winner}</span>
+      </div>
+      <div className="mt-1 flex items-center justify-between">
+        <span className="font-mono text-[10px] text-mut">{r.predicate}</span>
+        <span className="tnum text-xs" style={{ color: r.pnl >= 0 ? "#0AA06E" : "#E5484D" }}>{usd(r.pnl)}</span>
+      </div>
+    </div>
   );
 }
 

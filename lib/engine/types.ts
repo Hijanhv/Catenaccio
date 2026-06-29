@@ -107,6 +107,40 @@ export interface DecisionRecord {
   leaf: string;
 }
 
+/** A prediction signal derived from the same fair-value engine that prices the book. */
+export interface Signal {
+  ts: number;
+  kind: "value" | "sharp";
+  market: MarketId;
+  outcome: string;
+  detail: string;
+  /** model minus market, in percentage points (value signals) */
+  edgePct?: number;
+  /** 0..1, for ranking/intensity */
+  strength: number;
+}
+
+/**
+ * A settlement receipt: how a market's outcome resolves against Merkle-proven
+ * TxLINE scores via Txoracle's `validate_stat` predicate. This is the agent's
+ * settlement step, and it is verifiable rather than trusted.
+ */
+export interface SettlementReceipt {
+  market: MarketId;
+  winner: string;
+  pnl: number;
+  /** human-readable predicate, e.g. "homeGoals - awayGoals > 0" */
+  predicate: string;
+  /** TxLINE soccer stat keys the predicate reads */
+  statKeys: number[];
+  /** the scores datum that proves it */
+  txlineProof: { fixtureId: number; seq: number };
+  program: string;
+  instruction: string;
+  verified: boolean;
+  simulated: boolean;
+}
+
 export interface RiskState {
   totalExposure: number;
   maxDrawdownHit: boolean;
@@ -138,4 +172,8 @@ export interface EngineSnapshot {
   recentFills: Fill[];
   recentDecisions: DecisionRecord[];
   lastGoal: { team: "home" | "away"; clockSeconds: number; repriceMs: number } | null;
+  /** live prediction signals from the fair-value engine */
+  recentSignals: Signal[];
+  /** settlement receipts, populated at full time */
+  settlements: SettlementReceipt[];
 }

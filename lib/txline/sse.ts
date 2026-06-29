@@ -1,8 +1,7 @@
 /**
  * Resilient SSE client for TxLINE `/api/odds/stream` and `/api/scores/stream`.
  *
- * Resilience is a FEATURE, not an afterthought — a desk cannot quote on a feed it
- * can't trust. This client:
+ * A desk cannot quote on a feed it can't trust, so this client:
  *   - auto-reconnects with exponential backoff,
  *   - tracks `seq` per stream and detects gaps,
  *   - on a gap, backfills via `/api/{kind}/updates/{day}/{hour}/{interval}` before

@@ -1,17 +1,17 @@
 /**
- * TxLINE authentication (the real two-token flow).
+ * TxLINE authentication (two-token flow).
  *
- * 1. Guest JWT:  POST {AUTH}/auth/guest/start            → { token }
- * 2. Subscribe on-chain to the FREE World Cup real-time tier (SERVICE_LEVEL_ID=12)
- *    — for the hackathon TxODDS waived all data fees, so this is zero-cost.
- * 3. Activate API token: POST {AUTH}/api/token/activate   → { apiToken }
- * 4. Every data call sends BOTH headers:
+ * 1. Guest JWT:  POST {AUTH}/auth/guest/start            -> { token }
+ * 2. Subscribe on-chain to the free World Cup real-time tier (the `subscribe`
+ *    instruction on Txoracle).
+ * 3. Activate API token: POST {AUTH}/api/token/activate   -> { apiToken }
+ * 4. Every data call sends both headers:
  *      Authorization: Bearer <jwt>
  *      X-Api-Token:   <apiToken>
  *
- * If TXLINE_JWT / TXLINE_API_TOKEN are already in the environment we use them
- * directly (handy once you've activated once). With no credentials at all, the
- * app falls back to the bundled deterministic replay so judges can test for free.
+ * If TXLINE_JWT / TXLINE_API_TOKEN are set in the environment they are used
+ * directly. With no credentials the app falls back to the bundled deterministic
+ * replay, so it runs without an account.
  */
 
 export interface TxlineCreds {
