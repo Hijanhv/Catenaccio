@@ -5,9 +5,8 @@ import { motion } from "framer-motion";
 /**
  * Hero illustration — a football riding a rising in-play market.
  * Candlesticks build in, the trend line draws itself, a live-price marker sweeps
- * the chart, and the ball floats + slowly rotates. Football = the live match;
- * candlesticks = the market Catenaccio prices. One responsive SVG + a layered
- * ball, animated with Framer Motion. Clean, dynamic, state-of-the-art.
+ * the chart, and the ball floats and slowly rotates. One responsive SVG,
+ * animated with Framer Motion.
  */
 
 const BASE = 352;

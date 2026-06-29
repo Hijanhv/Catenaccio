@@ -1,16 +1,14 @@
 /**
- * Courtsiding / latency-arbitrage simulator — the threat Catenaccio defends.
+ * Courtsiding / latency-arbitrage simulator.
  *
- * THE ATTACK (real, costly, universal): when a goal is scored, a "courtsider"
- * watching a faster source (in the stadium, a low-latency feed) knows the true
- * price has moved seconds before a book on a broadcast-derived feed updates. In
- * that window they hit the book's STALE price for near-risk-free profit.
+ * The attack: when a goal is scored, a courtsider on a faster source (the stadium,
+ * a low-latency feed) knows the true price has moved seconds before a book on a
+ * broadcast-derived feed updates, and hits the book's stale price.
  *
- * We model the attack honestly so the "$ prevented" number is a MEASURED result,
- * not a staged one:
+ * The model produces a measured figure rather than a single staged number:
  *  - The courtsider reacts `attackerReactionMs` after the goal.
- *  - A naive book updates `bookFeedDelayMs` after the goal (broadcast-derived).
- *  - Catenaccio, on TxLINE's verified feed, suspends+reprices `repriceMs` after.
+ *  - A book on a broadcast feed updates `bookFeedDelayMs` after the goal.
+ *  - Catenaccio, on TxLINE's feed, suspends and reprices `repriceMs` after.
  *
  * A stale quote is exploitable only while it still exists. So the dollars leaked
  * depend on whether the attacker's reaction lands *before* the defender's update:

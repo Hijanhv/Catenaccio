@@ -27,12 +27,12 @@ const STEPS = [
 ];
 
 const FEATURES = [
-  { e: "⚡", t: "~400 ms hot path", d: "Suspend → reprice → reopen the instant a goal is confirmed. Verification runs in parallel, never blocking." },
-  { e: "🥷", t: "Courtsider Cam", d: "A live head-to-head: a broadcast book leaks real dollars; Catenaccio leaks $0 — measured, not staged." },
-  { e: "🧠", t: "Deterministic model", d: "Time-decaying Poisson / Dixon-Coles, calibrated to consensus. Defensible from first principles, fully tested." },
-  { e: "🛡️", t: "Risk + resilience", d: "Exposure caps, drawdown kill-switch, realistic fees, SSE reconnect with sequence-gap backfill." },
-  { e: "🔗", t: "On-chain proof", d: "Verify any fill against its TxLINE Merkle proof. Tamper-evident & independently checkable — no trust required." },
-  { e: "🤖", t: "MCP server", d: "Exposes verified in-play signals as tools any other AI agent can call. Composable by design." },
+  { t: "~400 ms reprice", d: "Suspend, reprice, and reopen when a goal is confirmed. Verification and anchoring run in parallel and never block the reprice." },
+  { t: "Courtsider Cam", d: "A side-by-side comparison of a broadcast-delayed book and Catenaccio, with the dollars leaked on each — a measured figure from a calibrated attacker." },
+  { t: "Deterministic model", d: "Time-decaying Poisson with a Dixon-Coles correction, calibrated to the market consensus and unit-tested." },
+  { t: "Risk and resilience", d: "Exposure caps, a drawdown kill-switch, real fees, and SSE reconnect with sequence-gap backfill." },
+  { t: "On-chain verification", d: "Resolve any fill to its TxLINE Merkle proof and check it against the on-chain root." },
+  { t: "MCP server", d: "Exposes the agent's signals as tools another agent can call." },
 ];
 
 export default function Landing() {
@@ -53,7 +53,7 @@ export default function Landing() {
       {/* ── hero ── */}
       <section className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-12 md:grid-cols-2 md:py-20">
         <div>
-          <div className="eyebrow">⚽ TxLINE × Solana · Trading Tools &amp; Agents</div>
+          <div className="eyebrow"><span className="h-1.5 w-1.5 rounded-full bg-shield" />TxLINE × Solana · Trading Tools &amp; Agents</div>
           <h1 className="mt-5 text-4xl font-semibold leading-[1.05] tracking-tight text-ink sm:text-5xl md:text-6xl">
             The defense for your <span className="text-shield">in-play</span> prices.
           </h1>
@@ -131,12 +131,12 @@ export default function Landing() {
 
       {/* ── features ── */}
       <section className="mx-auto max-w-6xl px-5 py-8">
-        <h2 className="text-center text-2xl font-semibold tracking-tight text-ink sm:text-3xl">Built to win, built to deploy</h2>
+        <h2 className="text-center text-2xl font-semibold tracking-tight text-ink sm:text-3xl">What&apos;s inside</h2>
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((f) => (
             <div key={f.t} className="glass p-6 transition hover:shadow-soft">
-              <div className="text-2xl">{f.e}</div>
-              <div className="mt-3 text-lg font-semibold text-ink">{f.t}</div>
+              <div className="h-1.5 w-6 rounded-full bg-shield" />
+              <div className="mt-4 text-lg font-semibold text-ink">{f.t}</div>
               <div className="mt-2 text-sm leading-relaxed text-mut">{f.d}</div>
             </div>
           ))}
@@ -171,7 +171,7 @@ export default function Landing() {
         <div className="glass flex flex-col items-center gap-5 p-10 text-center sm:p-14">
           <LogoMark size={52} className="animate-float" />
           <h2 className="text-2xl font-semibold tracking-tight text-ink sm:text-3xl">See it defend a live match</h2>
-          <p className="max-w-lg text-mut">Watch the Courtsider Cam, the ~400 ms reprices, and verify any price on-chain — running free, right now.</p>
+          <p className="max-w-lg text-mut">Watch the Courtsider Cam, the reprices on each goal, and verify any price on-chain. Runs in the browser, no setup.</p>
           <Link href="/app" className="btn-primary">Launch the live demo →</Link>
         </div>
       </section>
@@ -181,7 +181,7 @@ export default function Landing() {
         <div className="mx-auto grid max-w-6xl gap-8 px-5 py-12 sm:grid-cols-2 md:grid-cols-4">
           <div>
             <Wordmark size={28} />
-            <p className="mt-4 max-w-xs text-sm text-mut">Any operator can now price in-play as fast as bet365 — and prove every tick.</p>
+            <p className="mt-4 max-w-xs text-sm text-mut">Prices in-play markets fast enough to avoid latency arbitrage, and anchors every quote on-chain.</p>
           </div>
           <FooterCol title="Product" links={[["Live demo", "/app"], ["How it works", "#how"], ["GitHub", "https://github.com/Hijanhv/Catenaccio"]]} />
           <FooterCol title="Stack" links={[["Next.js 15", "#"], ["Solana devnet", "#"], ["TxLINE", "#"], ["MCP server", "#"]]} />

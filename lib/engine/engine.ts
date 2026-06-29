@@ -1,17 +1,16 @@
 /**
- * Catenaccio engine — the deterministic, event-sourced brain.
+ * Catenaccio engine: a deterministic, event-sourced reducer.
  *
- * Design principle: the agent is a PURE FUNCTION of an ordered, timestamped,
- * verifiable event stream. Feed it the same events and you get the same state,
- * the same quotes, the same PnL, and the same Merkle root — every time. That is
- * what makes the track record auditable and the logic defensible.
+ * The agent is a pure function of an ordered, timestamped event stream. The same
+ * events give the same state, quotes, PnL, and Merkle root, which makes runs
+ * reproducible and auditable.
  *
- * Flow per event:
- *   odds  → update consensus anchor + re-quote
- *   clock → time-decay fair value + re-quote
- *   score → [HOT PATH] suspend → reprice off the model in ~400ms → reopen,
- *           and measure the latency-arb a courtsider could NOT capture
- *   feed  → suspend/resume on connectivity (never quote on stale data)
+ * Per event:
+ *   odds  -> update consensus anchor and re-quote
+ *   clock -> time-decay fair value and re-quote
+ *   score -> suspend, reprice off the model (~400ms), reopen; measure the
+ *            latency-arb a courtsider could not capture
+ *   feed  -> suspend/resume on connectivity; never quote on stale data
  */
 
 import {

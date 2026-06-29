@@ -1,15 +1,12 @@
 #!/usr/bin/env npx tsx
 /**
- * Catenaccio MCP server — exposes the agent's VERIFIED in-play signals as tools
- * any other AI agent (Claude, a trading bot, an arena opponent) can call over
- * stdio. This is the composability story the track is curious about: "what do
- * agents look like when the data is this granular and fast?" → they call
- * Catenaccio for a fair value that is (a) repriced in ~400ms and (b) anchored to
- * authentic TxLINE data on Solana.
+ * Catenaccio MCP server. Exposes the agent's in-play signals as tools another
+ * agent can call over stdio: a fair value that is repriced on confirmed events
+ * and anchored to TxLINE data on Solana.
  *
- *   npm run mcp     # then connect any MCP client over stdio
+ *   npm run mcp     # then connect an MCP client over stdio
  *
- * Tools: get_fair_value · get_quote · get_arb_report · verify_decision · run_backtest
+ * Tools: get_fair_value, get_quote, get_arb_report, verify_decision, run_backtest
  */
 
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";

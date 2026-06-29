@@ -1,26 +1,21 @@
 /**
  * In-play football fair-value model.
  *
- * GOAL: given the live score, the match clock, and red cards, produce a fair
- * probability for each market (1X2, Over/Under 2.5 goals, Both-Teams-To-Score)
- * that updates *deterministically and instantly* the moment a goal/red card is
- * confirmed — before the slower market consensus has finished repricing.
+ * Given the live score, the match clock, and red cards, it produces a fair
+ * probability for each market (1X2, over/under 2.5 goals, both teams to score),
+ * updated when a goal or card is confirmed.
  *
- * METHOD (standard, defensible, documented):
- *  - Remaining goals for each team are modelled as independent Poisson processes
- *    whose intensity scales with the fraction of the match still to play
- *    (a goal in minute 10 has ~80 min of scoring left; in minute 85, ~5 min).
- *  - The joint distribution of *additional* goals gets a Dixon & Coles (1997)
- *    low-score correlation correction (rho), which fixes the well-known Poisson
- *    under-dispersion at 0-0 / 1-0 / 0-1 / 1-1.
- *  - Base full-match scoring rates (lambda_home, lambda_away) are CALIBRATED to
- *    the pre-match de-margined consensus (TxLINE `Pct`) so we ANCHOR to the sharp
- *    market and never claim to out-predict it. Our only edge is *speed of
- *    repricing*, which is operational, not predictive.
+ * Method:
+ *  - Remaining goals for each team are independent Poisson processes whose
+ *    intensity scales with the fraction of the match still to play.
+ *  - The joint distribution of additional goals takes a Dixon & Coles (1997)
+ *    low-score correlation correction (rho), which addresses Poisson
+ *    under-dispersion at 0-0, 1-0, 0-1, 1-1.
+ *  - Full-match scoring rates are calibrated at kickoff to the de-margined
+ *    consensus (TxLINE `Pct`), so the model starts at the market and moves only
+ *    when the score or clock moves. The edge is repricing speed, not prediction.
  *
- * Everything here is a pure function of its inputs → fully reproducible from the
- * event log, which is what "deterministic, mathematically defensible logic" means
- * in the judging rubric.
+ * Every function here is pure, so runs are reproducible from the event log.
  */
 
 const MAX_GOALS = 10; // grid truncation; P(>10 additional goals) is negligible

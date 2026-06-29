@@ -108,7 +108,7 @@ function Header({ snap, playing, speed, done, toggle, restart, setSpeed }: any) 
   );
 }
 
-/* ─────────────────────────────── Hero (money shot) ─────────────────────────────── */
+/* ─────────────────────────────── Hero ─────────────────────────────── */
 function Hero({ snap }: { snap: EngineSnapshot }) {
   const justGoal = snap.lastGoal && snap.feedStatus !== "suspended";
   return (
@@ -383,7 +383,7 @@ function VerifyModal({ fill, snap, engineRef, onClose }: { fill: Fill; snap: Eng
           <button onClick={onClose} className="chip text-mut hover:bg-panel2">esc</button>
         </div>
 
-        {/* the hero: TxLINE data authenticity */}
+        {/* TxLINE data authenticity */}
         <div className="mt-4 rounded-xl border border-hair bg-panel2/50 p-3">
           <div className="text-[10px] uppercase tracking-wider text-mut2">1 · TxLINE data authenticity</div>
           <div className="mt-1 text-sm">

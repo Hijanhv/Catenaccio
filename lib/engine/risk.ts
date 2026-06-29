@@ -1,11 +1,9 @@
 /**
- * Risk engine — the safety rails that make this deployable, not a toy.
- *
- * A real trading desk will not run an agent that can blow up. Catenaccio enforces:
+ * Risk controls. Enforces:
  *   - per-market and total exposure caps,
- *   - a drawdown kill-switch (stop quoting if we lose more than X),
- *   - suspend-on-uncertainty (no quoting while the feed is stale/gapped),
- *   - realistic fees + slippage baked into every fill's PnL.
+ *   - a drawdown kill-switch (stop quoting past a loss threshold),
+ *   - suspend-on-uncertainty (no quoting while the feed is stale or gapped),
+ *   - fees on every fill's PnL.
  */
 
 export interface RiskConfig {

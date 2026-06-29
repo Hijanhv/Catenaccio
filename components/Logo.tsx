@@ -3,7 +3,7 @@
 /**
  * Catenaccio mark — an aesthetic football. Clean geometric soccer ball with an
  * emerald centre panel (our signature pitch-green) and charcoal seams. Reads
- * crisp from 16px (favicon) to 160px (hero).
+ * crisp from 16px to 160px.
  */
 
 export function LogoMark({ size = 36, className = "" }: { size?: number; className?: string }) {

@@ -1,18 +1,14 @@
 /**
- * Merkle tree + inclusion proofs — the data structure behind every
- * "verify this fill on-chain" receipt.
+ * Merkle tree and inclusion proofs.
  *
- * Catenaccio commits the Merkle ROOT of its append-only decision log to Solana
- * (via the SPL Memo program — no custom smart contract required). Anyone can
- * later take a single decision (a leaf), walk the proof path, recompute the
- * root, and confirm it matches the on-chain root. That proves the decision
- * existed at commit time and was not edited afterwards — tamper-evidence and
- * non-repudiation, exactly what an auditor or counterparty needs.
+ * The agent commits the Merkle root of its append-only decision log to Solana via
+ * the SPL Memo program. Given one decision (a leaf), anyone can walk the proof
+ * path, recompute the root, and check it against the on-chain root. That shows the
+ * decision existed at commit time and was not edited afterwards.
  *
- * NOTE on framing (important for the interview): a Merkle proof proves the DATA
- * is authentic and unchanged. It does NOT prove a decision was "optimal" or
- * "correct". We never claim "trustless"; we claim "tamper-evident & independently
- * verifiable".
+ * A proof shows the data is authentic and unchanged; it does not show a decision
+ * was optimal. The wording is "tamper-evident and independently verifiable", not
+ * "trustless".
  */
 
 import { sha256, toHex, fromHex, utf8 } from "./math/sha256";

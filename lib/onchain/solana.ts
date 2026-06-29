@@ -1,23 +1,15 @@
 /**
- * Solana anchoring + verification.
+ * Solana anchoring and verification.
  *
- * TWO on-chain jobs — and NEITHER needs us to write a Rust smart contract:
+ * Two on-chain jobs, neither needs a custom program:
+ *  1. Verify TxLINE data: call TxODDS's deployed Txoracle program (validate_stat)
+ *     to check a stat's Merkle proof against the on-chain root.
+ *  2. Anchor the decision log: write its 32-byte Merkle root via the SPL Memo
+ *     program.
  *
- *  1. VERIFY TxLINE DATA (the hero):  TxODDS already deployed the `Txoracle`
- *     Anchor program (devnet 6pW64gN1s2uqjHkn1unFeEjAwJkPGHoppGvS715wyP2J) with a
- *     `validate_stat` instruction. We call it from this TS client to confirm a
- *     goal/odds datum's Merkle proof against the on-chain root. Zero Rust by us.
- *
- *  2. ANCHOR OUR DECISION LOG:  we write the 32-byte Merkle root of our decision
- *     log as a transaction memo via Solana's standard SPL Memo program. That is a
- *     real, timestamped, immutable on-chain commitment — again, zero Rust.
- *
- * (An OPTIONAL ~50-line Anchor program for a dedicated decision-log PDA lives in
- *  /onchain/programs and is documented in the README, but the system runs fully
- *  without deploying it.)
- *
- * With no funded devnet wallet present, anchoring is SIMULATED with a deterministic
- * signature so the demo runs free — the Merkle verification itself is always real.
+ * An optional Anchor program for a dedicated PDA lives in /onchain; it is not
+ * required. With no funded devnet wallet, anchoring is simulated with a
+ * deterministic signature; the Merkle verification is always real.
  */
 
 import { Connection, Keypair, PublicKey, Transaction, TransactionInstruction, sendAndConfirmTransaction } from "@solana/web3.js";

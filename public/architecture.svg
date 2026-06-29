@@ -1,96 +1,104 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 470" font-family="-apple-system,BlinkMacSystemFont,Segoe UI,Inter,sans-serif">
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#5BF0C0"/><stop offset="1" stop-color="#17A87E"/>
+    <linearGradient id="ballg" x1="-20" y1="-20" x2="20" y2="20" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#22C58C"/><stop offset="1" stop-color="#077E57"/>
     </linearGradient>
-    <marker id="arw" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto">
-      <path d="M0,0 L6,3 L0,6 Z" fill="#36E2A6"/>
+  </defs>
+
+  <rect width="1120" height="470" rx="18" fill="#FFFFFF"/>
+  <rect x="0.5" y="0.5" width="1119" height="469" rx="18" fill="none" stroke="rgba(12,18,32,0.10)"/>
+
+  <!-- header: football logo + title -->
+  <g transform="translate(46,44) scale(0.62)">
+    <circle cx="0" cy="0" r="25" fill="#fff" stroke="#0B0F16" stroke-width="2.4"/>
+    <line x1="0" y1="-9" x2="0" y2="-23" stroke="#0B0F16" stroke-width="1.8" stroke-linecap="round"/>
+    <line x1="8.56" y1="-2.78" x2="22.8" y2="-7.4" stroke="#0B0F16" stroke-width="1.8" stroke-linecap="round"/>
+    <line x1="5.29" y1="7.28" x2="14.1" y2="19.4" stroke="#0B0F16" stroke-width="1.8" stroke-linecap="round"/>
+    <line x1="-5.29" y1="7.28" x2="-14.1" y2="19.4" stroke="#0B0F16" stroke-width="1.8" stroke-linecap="round"/>
+    <line x1="-8.56" y1="-2.78" x2="-22.8" y2="-7.4" stroke="#0B0F16" stroke-width="1.8" stroke-linecap="round"/>
+    <polygon points="0,-9 8.56,-2.78 5.29,7.28 -5.29,7.28 -8.56,-2.78" fill="url(#ballg)"/>
+  </g>
+  <text x="74" y="40" fill="#0B0F16" font-size="21" font-weight="700" letter-spacing="2">CATENACCIO</text>
+  <text x="74" y="60" fill="#566173" font-size="12" letter-spacing="0.5">In-play market-making agent · system architecture · TxLINE × Solana</text>
+  <text x="1080" y="52" text-anchor="end" fill="#98A1B0" font-size="11">deterministic · event-sourced</text>
+
+  <!-- S1 TxLINE -->
+  <rect x="36" y="100" width="168" height="320" rx="14" fill="#F6F8FB" stroke="rgba(12,18,32,0.09)"/>
+  <text x="120" y="125" text-anchor="middle" fill="#566173" font-size="11" letter-spacing="1.5">TXLINE FEED</text>
+  <rect x="52" y="142" width="136" height="56" rx="9" fill="#fff" stroke="rgba(10,160,110,0.30)"/>
+  <text x="120" y="166" text-anchor="middle" fill="#0B0F16" font-size="12.5" font-weight="600">Odds SSE</text>
+  <text x="120" y="183" text-anchor="middle" fill="#566173" font-size="10.5">de-margined Pct consensus</text>
+  <rect x="52" y="210" width="136" height="56" rx="9" fill="#fff" stroke="rgba(10,160,110,0.30)"/>
+  <text x="120" y="234" text-anchor="middle" fill="#0B0F16" font-size="12.5" font-weight="600">Scores SSE</text>
+  <text x="120" y="251" text-anchor="middle" fill="#566173" font-size="10.5">sub-second confirmed goals</text>
+  <rect x="52" y="278" width="136" height="50" rx="9" fill="#fff" stroke="rgba(12,18,32,0.10)"/>
+  <text x="120" y="299" text-anchor="middle" fill="#0B0F16" font-size="12" font-weight="600">Replay / updates</text>
+  <text x="120" y="315" text-anchor="middle" fill="#566173" font-size="10.5">gap backfill + demo</text>
+
+  <!-- S2 Ingestion -->
+  <rect x="244" y="100" width="178" height="320" rx="14" fill="#F6F8FB" stroke="rgba(12,18,32,0.09)"/>
+  <text x="333" y="125" text-anchor="middle" fill="#566173" font-size="11" letter-spacing="1.5">INGESTION</text>
+  <rect x="260" y="142" width="146" height="44" rx="9" fill="#fff" stroke="rgba(12,18,32,0.10)"/>
+  <text x="333" y="169" text-anchor="middle" fill="#0B0F16" font-size="12">Resilient SSE · reconnect</text>
+  <rect x="260" y="196" width="146" height="44" rx="9" fill="#fff" stroke="rgba(12,18,32,0.10)"/>
+  <text x="333" y="223" text-anchor="middle" fill="#0B0F16" font-size="12">Sequence-gap backfill</text>
+  <rect x="260" y="250" width="146" height="44" rx="9" fill="#fff" stroke="rgba(12,18,32,0.10)"/>
+  <text x="333" y="277" text-anchor="middle" fill="#0B0F16" font-size="12">Normalise → EventStream</text>
+  <rect x="260" y="304" width="146" height="44" rx="9" fill="#fff" stroke="rgba(10,160,110,0.30)"/>
+  <text x="333" y="331" text-anchor="middle" fill="#0AA06E" font-size="12" font-weight="600">Merkle verify (TxLINE)</text>
+
+  <!-- S3 Brain -->
+  <rect x="462" y="100" width="230" height="320" rx="14" fill="#F6F8FB" stroke="rgba(10,160,110,0.28)"/>
+  <text x="577" y="125" text-anchor="middle" fill="#0AA06E" font-size="11" letter-spacing="1.5">THE BRAIN — deterministic</text>
+  <rect x="478" y="138" width="198" height="42" rx="9" fill="#fff" stroke="rgba(12,18,32,0.10)"/>
+  <text x="577" y="164" text-anchor="middle" fill="#0B0F16" font-size="12">Fair value · Poisson / Dixon-Coles</text>
+  <rect x="478" y="186" width="198" height="42" rx="9" fill="#fff" stroke="rgba(12,18,32,0.10)"/>
+  <text x="577" y="212" text-anchor="middle" fill="#0B0F16" font-size="12">Quote · bid/ask ± spread · skew</text>
+  <rect x="478" y="234" width="198" height="42" rx="9" fill="#fff" stroke="rgba(12,18,32,0.10)"/>
+  <text x="577" y="260" text-anchor="middle" fill="#0B0F16" font-size="12">Cross-market consistency guard</text>
+  <rect x="478" y="282" width="198" height="46" rx="9" fill="rgba(10,160,110,0.10)" stroke="#0AA06E" stroke-width="1.5"/>
+  <text x="577" y="303" text-anchor="middle" fill="#077E57" font-size="12.5" font-weight="700">Hot path</text>
+  <text x="577" y="319" text-anchor="middle" fill="#0AA06E" font-size="10.5">goal → suspend → reprice ~400ms</text>
+  <rect x="478" y="334" width="198" height="40" rx="9" fill="#fff" stroke="rgba(229,72,77,0.30)"/>
+  <text x="577" y="359" text-anchor="middle" fill="#C0392F" font-size="12">Risk · caps · drawdown kill-switch</text>
+
+  <!-- S4 Execution -->
+  <rect x="732" y="100" width="158" height="320" rx="14" fill="#F6F8FB" stroke="rgba(12,18,32,0.09)"/>
+  <text x="811" y="125" text-anchor="middle" fill="#566173" font-size="11" letter-spacing="1.5">EXECUTION</text>
+  <rect x="748" y="146" width="126" height="50" rx="9" fill="#fff" stroke="rgba(12,18,32,0.10)"/>
+  <text x="811" y="176" text-anchor="middle" fill="#0B0F16" font-size="12">Order matcher</text>
+  <rect x="748" y="208" width="126" height="56" rx="9" fill="#fff" stroke="rgba(229,72,77,0.30)"/>
+  <text x="811" y="232" text-anchor="middle" fill="#C0392F" font-size="12" font-weight="600">Courtsider sim</text>
+  <text x="811" y="249" text-anchor="middle" fill="#566173" font-size="10">calibrated attacker</text>
+  <rect x="748" y="276" width="126" height="50" rx="9" fill="#fff" stroke="rgba(12,18,32,0.10)"/>
+  <text x="811" y="306" text-anchor="middle" fill="#0B0F16" font-size="12">PnL · real fees</text>
+
+  <!-- S5 Solana + surfaces -->
+  <rect x="900" y="100" width="184" height="320" rx="14" fill="#F6F8FB" stroke="rgba(124,58,237,0.28)"/>
+  <text x="992" y="125" text-anchor="middle" fill="#7C3AED" font-size="11" letter-spacing="1.5">SOLANA + SURFACES</text>
+  <rect x="916" y="142" width="152" height="50" rx="9" fill="#fff" stroke="rgba(124,58,237,0.28)"/>
+  <text x="992" y="164" text-anchor="middle" fill="#0B0F16" font-size="12" font-weight="600">Txoracle · validate_stat</text>
+  <text x="992" y="180" text-anchor="middle" fill="#566173" font-size="10">verify data (0 Rust)</text>
+  <rect x="916" y="202" width="152" height="50" rx="9" fill="#fff" stroke="rgba(124,58,237,0.28)"/>
+  <text x="992" y="224" text-anchor="middle" fill="#0B0F16" font-size="12" font-weight="600">Memo · anchor root</text>
+  <text x="992" y="240" text-anchor="middle" fill="#566173" font-size="10">tamper-evident log</text>
+  <rect x="916" y="262" width="152" height="44" rx="9" fill="#fff" stroke="rgba(10,160,110,0.30)"/>
+  <text x="992" y="289" text-anchor="middle" fill="#0AA06E" font-size="12">Dashboard (Next.js)</text>
+  <rect x="916" y="316" width="152" height="44" rx="9" fill="#fff" stroke="rgba(10,160,110,0.30)"/>
+  <text x="992" y="343" text-anchor="middle" fill="#0AA06E" font-size="12">MCP server (for agents)</text>
+
+  <!-- arrows -->
+  <g stroke="#0AA06E" stroke-width="1.8" fill="none">
+    <path d="M206 260 H240" marker-end="url(#a)"/>
+    <path d="M424 260 H458" marker-end="url(#a)"/>
+    <path d="M694 260 H728" marker-end="url(#a)"/>
+    <path d="M892 260 H898" marker-end="url(#a)"/>
+  </g>
+  <defs>
+    <marker id="a" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#0AA06E"/>
     </marker>
   </defs>
 
-  <rect width="1120" height="470" rx="18" fill="#06080B"/>
-  <rect x="1" y="1" width="1118" height="468" rx="18" fill="none" stroke="rgba(255,255,255,0.06)"/>
-
-  <!-- header -->
-  <path d="M40 30 L57 37 V50 C57 60 50 66 40 70 C30 66 23 60 23 50 V37 Z" fill="rgba(54,226,166,0.08)" stroke="url(#g)" stroke-width="2.2" stroke-linejoin="round"/>
-  <path d="M42 38 L34 50 H39 L37 60 L47 46 H41 Z" fill="url(#g)"/>
-  <text x="75" y="48" fill="#E9EEF5" font-size="22" font-weight="600" letter-spacing="2">CATENACCIO</text>
-  <text x="75" y="66" fill="#8A94A6" font-size="12" letter-spacing="1">In-play market-making agent · system architecture · TxLINE × Solana</text>
-  <text x="1080" y="58" text-anchor="end" fill="#5A6373" font-size="11">deterministic · event-sourced</text>
-
-  <!-- stage panels -->
-  <g>
-    <!-- S1 TxLINE -->
-    <rect x="36" y="110" width="168" height="320" rx="14" fill="#0C0F14" stroke="rgba(255,255,255,0.07)"/>
-    <text x="120" y="135" text-anchor="middle" fill="#8A94A6" font-size="11" letter-spacing="1.5">TXLINE FEED</text>
-    <rect x="52" y="152" width="136" height="56" rx="9" fill="#11151C" stroke="rgba(54,226,166,0.25)"/>
-    <text x="120" y="176" text-anchor="middle" fill="#E9EEF5" font-size="12.5" font-weight="600">Odds SSE</text>
-    <text x="120" y="193" text-anchor="middle" fill="#8A94A6" font-size="10.5">de-margined Pct consensus</text>
-    <rect x="52" y="220" width="136" height="56" rx="9" fill="#11151C" stroke="rgba(54,226,166,0.25)"/>
-    <text x="120" y="244" text-anchor="middle" fill="#E9EEF5" font-size="12.5" font-weight="600">Scores SSE</text>
-    <text x="120" y="261" text-anchor="middle" fill="#8A94A6" font-size="10.5">sub-second confirmed goals</text>
-    <rect x="52" y="288" width="136" height="50" rx="9" fill="#11151C" stroke="rgba(255,255,255,0.07)"/>
-    <text x="120" y="309" text-anchor="middle" fill="#E9EEF5" font-size="12" font-weight="600">Replay / updates</text>
-    <text x="120" y="325" text-anchor="middle" fill="#8A94A6" font-size="10.5">gap backfill + demo</text>
-
-    <!-- S2 Ingestion -->
-    <rect x="244" y="110" width="178" height="320" rx="14" fill="#0C0F14" stroke="rgba(255,255,255,0.07)"/>
-    <text x="333" y="135" text-anchor="middle" fill="#8A94A6" font-size="11" letter-spacing="1.5">INGESTION</text>
-    <rect x="260" y="152" width="146" height="44" rx="9" fill="#11151C" stroke="rgba(255,255,255,0.07)"/>
-    <text x="333" y="179" text-anchor="middle" fill="#E9EEF5" font-size="12">Resilient SSE · reconnect</text>
-    <rect x="260" y="206" width="146" height="44" rx="9" fill="#11151C" stroke="rgba(255,255,255,0.07)"/>
-    <text x="333" y="233" text-anchor="middle" fill="#E9EEF5" font-size="12">Sequence-gap backfill</text>
-    <rect x="260" y="260" width="146" height="44" rx="9" fill="#11151C" stroke="rgba(255,255,255,0.07)"/>
-    <text x="333" y="287" text-anchor="middle" fill="#E9EEF5" font-size="12">Normalise → EventStream</text>
-    <rect x="260" y="314" width="146" height="44" rx="9" fill="#11151C" stroke="rgba(54,226,166,0.25)"/>
-    <text x="333" y="341" text-anchor="middle" fill="#36E2A6" font-size="12">Merkle verify (TxLINE)</text>
-
-    <!-- S3 Brain -->
-    <rect x="462" y="110" width="230" height="320" rx="14" fill="#0C0F14" stroke="rgba(54,226,166,0.18)"/>
-    <text x="577" y="135" text-anchor="middle" fill="#36E2A6" font-size="11" letter-spacing="1.5">THE BRAIN — deterministic</text>
-    <rect x="478" y="148" width="198" height="42" rx="9" fill="#11151C" stroke="rgba(255,255,255,0.07)"/>
-    <text x="577" y="174" text-anchor="middle" fill="#E9EEF5" font-size="12">Fair value · Poisson / Dixon-Coles</text>
-    <rect x="478" y="196" width="198" height="42" rx="9" fill="#11151C" stroke="rgba(255,255,255,0.07)"/>
-    <text x="577" y="222" text-anchor="middle" fill="#E9EEF5" font-size="12">Quote · bid/ask ± spread · skew</text>
-    <rect x="478" y="244" width="198" height="42" rx="9" fill="#11151C" stroke="rgba(255,255,255,0.07)"/>
-    <text x="577" y="270" text-anchor="middle" fill="#E9EEF5" font-size="12">Cross-market consistency guard</text>
-    <rect x="478" y="292" width="198" height="46" rx="9" fill="rgba(54,226,166,0.10)" stroke="url(#g)" stroke-width="1.5"/>
-    <text x="577" y="313" text-anchor="middle" fill="#36E2A6" font-size="12.5" font-weight="700">⚡ HOT PATH</text>
-    <text x="577" y="329" text-anchor="middle" fill="#8FE9CC" font-size="10.5">goal → suspend → reprice ~400ms</text>
-    <rect x="478" y="344" width="198" height="40" rx="9" fill="#11151C" stroke="rgba(255,107,94,0.25)"/>
-    <text x="577" y="369" text-anchor="middle" fill="#FF9A90" font-size="12">Risk · caps · drawdown kill-switch</text>
-
-    <!-- S4 Execution -->
-    <rect x="732" y="110" width="158" height="320" rx="14" fill="#0C0F14" stroke="rgba(255,255,255,0.07)"/>
-    <text x="811" y="135" text-anchor="middle" fill="#8A94A6" font-size="11" letter-spacing="1.5">EXECUTION</text>
-    <rect x="748" y="156" width="126" height="50" rx="9" fill="#11151C" stroke="rgba(255,255,255,0.07)"/>
-    <text x="811" y="186" text-anchor="middle" fill="#E9EEF5" font-size="12">Order matcher</text>
-    <rect x="748" y="218" width="126" height="56" rx="9" fill="#11151C" stroke="rgba(255,107,94,0.25)"/>
-    <text x="811" y="242" text-anchor="middle" fill="#FF9A90" font-size="12" font-weight="600">Courtsider sim</text>
-    <text x="811" y="259" text-anchor="middle" fill="#8A94A6" font-size="10">calibrated attacker</text>
-    <rect x="748" y="286" width="126" height="50" rx="9" fill="#11151C" stroke="rgba(255,255,255,0.07)"/>
-    <text x="811" y="316" text-anchor="middle" fill="#E9EEF5" font-size="12">PnL · real fees</text>
-
-    <!-- S5 Solana + surfaces -->
-    <rect x="900" y="110" width="184" height="320" rx="14" fill="#0C0F14" stroke="rgba(153,69,255,0.25)"/>
-    <text x="992" y="135" text-anchor="middle" fill="#B89CFF" font-size="11" letter-spacing="1.5">SOLANA + SURFACES</text>
-    <rect x="916" y="152" width="152" height="50" rx="9" fill="#11151C" stroke="rgba(153,69,255,0.30)"/>
-    <text x="992" y="174" text-anchor="middle" fill="#E9EEF5" font-size="12" font-weight="600">Txoracle · validate_stat</text>
-    <text x="992" y="190" text-anchor="middle" fill="#8A94A6" font-size="10">verify data (0 Rust)</text>
-    <rect x="916" y="212" width="152" height="50" rx="9" fill="#11151C" stroke="rgba(153,69,255,0.30)"/>
-    <text x="992" y="234" text-anchor="middle" fill="#E9EEF5" font-size="12" font-weight="600">Memo · anchor root</text>
-    <text x="992" y="250" text-anchor="middle" fill="#8A94A6" font-size="10">tamper-evident log</text>
-    <rect x="916" y="272" width="152" height="44" rx="9" fill="#11151C" stroke="rgba(54,226,166,0.25)"/>
-    <text x="992" y="299" text-anchor="middle" fill="#36E2A6" font-size="12">Dashboard (Next.js)</text>
-    <rect x="916" y="326" width="152" height="44" rx="9" fill="#11151C" stroke="rgba(54,226,166,0.25)"/>
-    <text x="992" y="353" text-anchor="middle" fill="#36E2A6" font-size="12">MCP server (for agents)</text>
-  </g>
-
-  <!-- arrows -->
-  <line x1="206" y1="270" x2="242" y2="270" stroke="#36E2A6" stroke-width="1.6" marker-end="url(#arw)"/>
-  <line x1="424" y1="270" x2="460" y2="270" stroke="#36E2A6" stroke-width="1.6" marker-end="url(#arw)"/>
-  <line x1="694" y1="270" x2="730" y2="270" stroke="#36E2A6" stroke-width="1.6" marker-end="url(#arw)"/>
-  <line x1="892" y1="270" x2="898" y2="270" stroke="#36E2A6" stroke-width="1.6" marker-end="url(#arw)"/>
-
-  <text x="560" y="455" text-anchor="middle" fill="#5A6373" font-size="11">Same events in → same quotes, same P&amp;L, same Merkle root out · replayable &amp; auditable end-to-end</text>
+  <text x="560" y="452" text-anchor="middle" fill="#98A1B0" font-size="11">Same events in → same quotes, same P&amp;L, same Merkle root out · replayable and auditable end-to-end</text>
 </svg>
