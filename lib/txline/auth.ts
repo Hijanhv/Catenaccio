@@ -43,23 +43,31 @@ export async function startGuest(authUrl: string): Promise<string> {
 
 /**
  * Step 3: activate the API token after an on-chain subscription.
- * `subscriptionSig` is the Solana tx signature of the `subscribe` instruction.
+ * `txSig` is the Solana tx signature of the `subscribe` instruction, and
+ * `walletSignature` is the wallet's ed25519 signature (base64) over the message
+ * `${txSig}:${leagues.join(",")}:${jwt}`. The endpoint returns the token, sometimes
+ * as JSON and sometimes as plain text. See scripts/subscribe.ts for the full flow.
  */
 export async function activateToken(
   authUrl: string,
   jwt: string,
-  subscriptionSig: string,
+  txSig: string,
   walletSignature: string,
   leagues: number[] = [],
 ): Promise<string> {
   const res = await fetch(`${authUrl}/api/token/activate`, {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${jwt}` },
-    body: JSON.stringify({ subscriptionSignature: subscriptionSig, walletSignature, leagues }),
+    body: JSON.stringify({ txSig, walletSignature, leagues }),
   });
-  if (!res.ok) throw new Error(`token/activate failed: ${res.status}`);
-  const j = (await res.json()) as { apiToken: string };
-  return j.apiToken;
+  if (!res.ok) throw new Error(`token/activate failed: ${res.status} ${await res.text()}`);
+  const txt = await res.text();
+  try {
+    const j = JSON.parse(txt);
+    return j.token || j.apiToken || txt;
+  } catch {
+    return txt.trim();
+  }
 }
 
 export const authHeaders = (c: TxlineCreds) => ({

@@ -22,6 +22,10 @@
   <b>Submitted to: Trading Tools &amp; Agents.</b> TxODDS &times; Solana World Cup Hackathon.
 </p>
 
+<p align="center">
+  <b>Live demo:</b> <a href="https://catenaccio-six.vercel.app">catenaccio-six.vercel.app</a>
+</p>
+
 ---
 
 ## What it is
@@ -142,24 +146,37 @@ sequenceDiagram
     end
 ```
 
-## Live TxLINE integration
+## Live TxLINE integration (proven on devnet)
 
 TxLINE is the **primary data source**. The agent consumes two SSE streams — odds
 (`Pct` de-margined consensus) and scores (sub-second confirmed goals and cards) — through
 a resilient client that reconnects, detects `seq` gaps, and backfills the missed interval
 before it resumes quoting. The engine never quotes on stale data.
 
-```bash
-# deterministic demo, no credentials needed
-npm run agent
+This is wired end to end and run against the real feed, not just the bundled replay:
 
-# live: stream the real TxLINE odds + scores feed into the same engine
-TXLINE_JWT=... TXLINE_API_TOKEN=... npm run live
+```bash
+npm run subscribe   # on-chain: subscribe to the free World Cup tier on devnet + activate an API token
+npm run live        # stream the real TxLINE odds + scores feed into the same engine
 ```
 
-The same engine runs in both modes — the only difference is whether events come from the
-bundled replay or the live socket. Auth is TxLINE's two-token flow (guest JWT + an API
-token activated after a free on-chain subscription); see `.env.example`.
+`npm run subscribe` performs TxLINE's actual auth flow from the quickstart: it funds a
+devnet wallet, calls Txoracle's `subscribe` instruction (the free World Cup tier moves no
+TxL — it just registers the subscription on-chain), gets a guest JWT, signs the activation
+message, and writes the activated token to `.env.local`. `npm run live` then streams real
+packets. A captured run is in [`docs/live-run.txt`](docs/live-run.txt):
+
+```
+[odds] connected
+[raw odds #1] {"FixtureId":18172280,"MessageId":"1835583265:00003:000334-10021-stab",
+              "Bookmaker":"TXLineStablePriceDemargined","SuperOddsType":"1X2_PARTICIPANTS", ...}
+ 0' 0-0 | win Home 42% | reprice —ms | feed connected | Sharp move: Away drifting 5.3pp
+```
+
+Devnet subscribe transaction:
+[`4A66g1kk…RDyk5E`](https://explorer.solana.com/tx/4A66g1kkSMDNnwv6zoW4aZd9NK1Z3tiHcLTJsHkqKyPKx2Kr9HPf2ak5KKwDoismCGUwZSkprBNvEVmvKfRDyk5E?cluster=devnet).
+The same deterministic engine runs whether events come from the live socket or the bundled
+replay (`npm run agent`), so the demo is reproducible with no credentials.
 
 ## Signals
 
@@ -236,14 +253,15 @@ independently verifiable", not "trustless".
 ## Quickstart
 
 Everything runs with no credentials, on a deterministic replay with simulated on-chain
-anchoring (the Merkle verification itself is real). To go live, copy `.env.example` to
-`.env` and add a TxLINE token and a Solana devnet wallet.
+anchoring (the Merkle verification itself is real). To go live, run `npm run subscribe`
+once (it provisions a devnet wallet + API token into `.env.local`), then `npm run live`.
 
 ```bash
 npm install
 npm run dev        # landing page at :3000; "Launch app" opens the dashboard at /app
-npm run agent      # headless run of the same engine
-npm run live       # stream the real TxLINE feed (needs TXLINE_JWT + TXLINE_API_TOKEN)
+npm run agent      # headless run of the same engine (deterministic replay)
+npm run subscribe  # one-time: subscribe to the free World Cup tier on devnet + activate a token
+npm run live       # stream the real TxLINE odds + scores feed into the engine
 npm run backtest   # 500 simulated matches
 npm run sweep      # latency-arb sensitivity curve
 npm run mcp        # MCP server over stdio
@@ -329,7 +347,7 @@ lib/txline/     auth, resilient SSE client, payload normaliser
 lib/onchain/    Memo anchoring (solana.ts) and validate_stat settlement (settlement.ts)
 components/     dashboard, landing page, illustration, logo
 mcp/            MCP server
-scripts/        agent, live, backtest, sweep
+scripts/        agent, subscribe (devnet auth flow), live, backtest, sweep
 tests/          Vitest suites
 onchain/        optional Anchor program and notes
 ```

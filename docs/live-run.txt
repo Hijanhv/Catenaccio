@@ -1,0 +1,14 @@
+Catenaccio — live TxLINE devnet capture (2026-06-29T13:02:43Z)
+Subscribe tx (devnet, service level 1, free World Cup tier):
+  https://explorer.solana.com/tx/4A66g1kkSMDNnwv6zoW4aZd9NK1Z3tiHcLTJsHkqKyPKx2Kr9HPf2ak5KKwDoismCGUwZSkprBNvEVmvKfRDyk5E?cluster=devnet
+Wallet: BhhmDFJZccDMvU4iWDm5qC8Y35ebbnWUa1pbbk4HpoBA
+-----------------------------------------------------------------
+Catenaccio live — streaming TxLINE. Ctrl-C to stop.
+[scores] connected
+[odds] connected
+[raw odds #1] {"FixtureId":18172280,"MessageId":"1835583265:00003:000334-10021-stab","Ts":1782738166550,"Bookmaker":"TXLineStablePriceDemargined","BookmakerId":10021,"SuperOddsType":"1X2_PARTICI
+ 0' 0-0 | win Home 42% | reprice —ms | arb prevented $0 | feed connected | Sharp move: Away drifting 5.3pp
+[raw odds #2] {"FixtureId":18175983,"MessageId":"1835583275:00003:000175-10021-stab","Ts":1782738172270,"Bookmaker":"TXLineStablePriceDemargined","BookmakerId":10021,"SuperOddsType":"OVERUNDER_P
+[raw scores #1] {"Ts":1782738179}
+[raw odds #3] {"Ts":1782738179}
+[summary] raw packets — odds: 4, scores: 1; decisions: 4

@@ -10,3 +10,4 @@ logs/
 agent-key.json
 .vercel
 next-env.d.ts
+tsconfig.tsbuildinfo

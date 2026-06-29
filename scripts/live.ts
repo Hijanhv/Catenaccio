@@ -11,10 +11,19 @@
  *   TXLINE_JWT=... TXLINE_API_TOKEN=... npm run live
  */
 
+import { readFileSync, existsSync } from "node:fs";
 import { credsFromEnv } from "../lib/txline/auth";
 import { streamSse, StreamKind } from "../lib/txline/sse";
 import { normalizeOdds, normalizeScore } from "../lib/txline/normalize";
 import { CatenaccioEngine } from "../lib/engine/engine";
+
+// Load .env.local (written by scripts/subscribe.ts) without a dependency.
+if (existsSync(".env.local")) {
+  for (const line of readFileSync(".env.local", "utf8").split("\n")) {
+    const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/);
+    if (m && !process.env[m[1]]) process.env[m[1]] = m[2];
+  }
+}
 
 const creds = credsFromEnv();
 if (!creds) {
@@ -60,12 +69,20 @@ function onStatus(stream: StreamKind) {
   };
 }
 
+const rawSeen: Record<StreamKind, number> = { odds: 0, scores: 0 };
+
 function feed(kind: StreamKind, normalize: (raw: any) => ReturnType<typeof normalizeOdds>) {
   streamSse(
     creds!,
     kind,
     {
       onMessage: (raw) => {
+        // proof of live data: log the first few raw TxLINE packets per stream
+        rawSeen[kind]++;
+        if (rawSeen[kind] <= 3) {
+          const d = raw?.data ?? raw;
+          console.error(`[raw ${kind} #${rawSeen[kind]}] ${JSON.stringify(d).slice(0, 180)}`);
+        }
         const ev = normalize(raw);
         if (!ev || ev.kind === "feed" || ev.kind === "clock") return;
         if (fixture === null) fixture = ev.fixtureId;
@@ -82,6 +99,16 @@ function feed(kind: StreamKind, normalize: (raw: any) => ReturnType<typeof norma
 console.error(`Catenaccio live — streaming TxLINE${fixture !== null ? ` fixture #${fixture}` : ""}. Ctrl-C to stop.`);
 feed("odds", normalizeOdds);
 feed("scores", normalizeScore);
+
+// Optional self-terminate for a bounded capture: LIVE_SECONDS=30 npm run live
+const liveSeconds = Number(process.env.LIVE_SECONDS ?? 0);
+if (liveSeconds > 0) {
+  setTimeout(() => {
+    ac.abort();
+    console.error(`\n[summary] raw packets — odds: ${rawSeen.odds}, scores: ${rawSeen.scores}; decisions: ${engine.snapshot().decisionCount}`);
+    process.exit(0);
+  }, liveSeconds * 1000);
+}
 
 process.on("SIGINT", () => {
   ac.abort();
