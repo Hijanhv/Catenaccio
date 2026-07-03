@@ -1,0 +1,16 @@
+Catenaccio — on-chain proof (Solana devnet), 2026-07-03T15:40:14Z
+================================================================
+
+## 1. Anchor decision-log root (real SPL Memo transaction)
+decision-log root : 4fb0bf92bb21c1c1bd0832f8bac62db073006b995b5b5b0caaddadaa47449f08
+decisions anchored: 93
+writing Memo transaction to devnet ...
+ANCHORED ON DEVNET
+signature: 5kUp4xP3DfgVHQRCWxa5mRrkfBDc85zRVA9THfjaaqZgHDwJMgf2MHR3u9vfDefE9havtumEuvatpnQUJXQ547qs
+explorer : https://explorer.solana.com/tx/5kUp4xP3DfgVHQRCWxa5mRrkfBDc85zRVA9THfjaaqZgHDwJMgf2MHR3u9vfDefE9havtumEuvatpnQUJXQ547qs?cluster=devnet
+
+## 2. Verify TxLINE data (real Txoracle.validate_stat)
+fixture 17952170 seq 941 statKey 1002: value = 1
+predicate      : statValue(1) > 0
+daily-roots PDA: HYo6qqMUXRaMit2YF6q6YEh5K1mWYBFC3pDZrV2HZN5f (epochDay 20608)
+Txoracle.validate_stat -> true  (proof valid against on-chain root)

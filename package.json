@@ -12,6 +12,8 @@
     "agent": "tsx scripts/agent.ts",
     "subscribe": "tsx scripts/subscribe.ts",
     "live": "tsx scripts/live.ts",
+    "anchor": "tsx scripts/anchor.ts",
+    "verify": "tsx scripts/verify.ts",
     "sweep": "tsx scripts/sweep.ts",
     "backtest": "tsx scripts/backtest.ts",
     "demo": "tsx scripts/agent.ts --demo",

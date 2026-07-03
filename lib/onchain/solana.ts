@@ -57,8 +57,9 @@ export async function anchorRoot(root: string): Promise<AnchorResult> {
 
 /**
  * Verify a TxLINE stat's Merkle proof against the Txoracle on-chain root.
- * In production this CPIs/reads `validate_stat`; without creds we document the
- * shape and return a structured (simulated) result so the UI flow is identical.
+ * The real, runnable implementation is scripts/verify.ts (`npm run verify`): it
+ * fetches /api/scores/stat-validation and calls `validate_stat` on devnet. This
+ * browser-safe helper returns the structured result the dashboard renders.
  */
 export interface StatVerification {
   fixtureId: number;

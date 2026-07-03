@@ -211,16 +211,26 @@ auditable. (`get_settlement` exposes the same over MCP.)
 
 ## On-chain layer, and how much Rust
 
-Two things touch Solana. Neither requires a custom smart contract.
+Everything on-chain is **Solana** — TxLINE is a Solana product (its data is served off-chain
+and anchored on Solana via the `Txoracle` program); there is no separate chain. Two things
+touch it, and neither needs a custom smart contract:
 
-1. Verifying TxLINE data and resolving outcomes: TxODDS already deployed the `Txoracle`
-   program, with `validate_stat`. We call it from a TypeScript client. No Rust written by us.
-2. Anchoring the decision log: a 32-byte Merkle root of the agent's decisions is written
-   via the SPL Memo program. No Rust written by us.
+1. Verifying TxLINE data and resolving outcomes: call TxODDS's deployed `Txoracle`
+   `validate_stat` from a TypeScript client. No Rust written by us.
+2. Anchoring the decision log: write a 32-byte Merkle root via the SPL Memo program. No Rust.
 
-So the live system is TypeScript end to end. An optional ~50-line Anchor program lives in
-[`onchain/`](onchain/) for teams who want a dedicated account instead of memos; the app,
-the demo, and the verification all run without deploying it.
+Both are wired and run for real on devnet (captured in [`docs/onchain-proof.txt`](docs/onchain-proof.txt)):
+
+```bash
+npm run anchor   # write the decision-log root via Memo → a real devnet transaction
+npm run verify   # call Txoracle.validate_stat on a real TxLINE Merkle proof → true/false
+```
+
+For example, a decision-log root anchored in devnet tx
+[`5kUp4xP3…547qs`](https://explorer.solana.com/tx/5kUp4xP3DfgVHQRCWxa5mRrkfBDc85zRVA9THfjaaqZgHDwJMgf2MHR3u9vfDefE9havtumEuvatpnQUJXQ547qs?cluster=devnet),
+and `validate_stat` returning `true` for a real stat checked against the on-chain daily-scores
+root. So the live system is TypeScript end to end. An optional ~50-line Anchor program lives in
+[`onchain/`](onchain/) for teams who want a dedicated account instead of memos; nothing requires it.
 
 A proof confirms the data behind a price or settlement is authentic and unaltered. It does
 not claim a decision was optimal. The wording throughout is "tamper-evident and
@@ -262,6 +272,8 @@ npm run dev        # landing page at :3000; "Launch app" opens the dashboard at 
 npm run agent      # headless run of the same engine (deterministic replay)
 npm run subscribe  # one-time: subscribe to the free World Cup tier on devnet + activate a token
 npm run live       # stream the real TxLINE odds + scores feed into the engine
+npm run anchor     # anchor a decision-log root on devnet (real Memo tx)
+npm run verify     # verify a real TxLINE stat on devnet via Txoracle.validate_stat
 npm run backtest   # 500 simulated matches
 npm run sweep      # latency-arb sensitivity curve
 npm run mcp        # MCP server over stdio
