@@ -178,6 +178,13 @@ Devnet subscribe transaction:
 The same deterministic engine runs whether events come from the live socket or the bundled
 replay (`npm run agent`), so the demo is reproducible with no credentials.
 
+The **deployed dashboard streams it too**: at
+[catenaccio-six.vercel.app](https://catenaccio-six.vercel.app), toggle **Replay → Live** and
+the page connects to a server-side Edge route (`app/api/stream/route.ts`) that mints a guest
+JWT, proxies the real TxLINE odds + scores feed, and forwards normalised events to the browser
+— the API token never leaves the server. Devnet is the 60-second free tier (real data); true
+real-time (0 delay) is the mainnet tier.
+
 ## Signals
 
 The fair-value engine does double duty. The number it uses to quote is also a prediction,

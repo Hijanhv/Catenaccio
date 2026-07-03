@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { useReplayEngine } from "./useReplayEngine";
+import { useLiveEngine } from "./useLiveEngine";
 import { LogoMark, Wordmark } from "./Logo";
 import { SensitivityChart } from "./SensitivityChart";
 import { MARKET_LABEL, MarketBook, Fill, EngineSnapshot, Signal, SettlementReceipt } from "@/lib/engine/types";
@@ -15,13 +16,34 @@ const pct = (p: number) => `${(p * 100).toFixed(1)}%`;
 const clock = (s: number) => `${Math.floor(s / 60)}'`;
 
 export default function Dashboard() {
-  const { snap, playing, speed, done, toggle, restart, setSpeed, engineRef } = useReplayEngine();
+  const [mode, setMode] = useState<"replay" | "live">("replay");
+  const replay = useReplayEngine(mode === "replay");
+  const live = useLiveEngine(mode === "live");
   const [verifyFill, setVerifyFill] = useState<Fill | null>(null);
+
+  const snap = mode === "live" ? live.snap : replay.snap;
+  const engineRef = mode === "live" ? live.engineRef : replay.engineRef;
 
   if (!snap) {
     return (
-      <div className="grid min-h-screen place-items-center">
-        <LogoMark size={64} className="animate-pulse" />
+      <div className="mx-auto max-w-[1280px] px-5 py-6">
+        <Header
+          snap={null}
+          playing={replay.playing}
+          speed={replay.speed}
+          toggle={replay.toggle}
+          restart={replay.restart}
+          setSpeed={replay.setSpeed}
+          mode={mode}
+          setMode={setMode}
+          liveStatus={live.status}
+        />
+        <div className="glass mt-24 grid place-items-center gap-3 py-20 text-center">
+          <LogoMark size={56} className="animate-pulse" />
+          <div className="text-sm text-mut">
+            {mode === "live" ? "Connecting to the live TxLINE feed…" : "Loading…"}
+          </div>
+        </div>
       </div>
     );
   }
@@ -32,7 +54,17 @@ export default function Dashboard() {
 
   return (
     <div className="mx-auto max-w-[1280px] px-5 py-6">
-      <Header snap={snap} playing={playing} speed={speed} done={done} toggle={toggle} restart={restart} setSpeed={setSpeed} />
+      <Header
+        snap={snap}
+        playing={replay.playing}
+        speed={replay.speed}
+        toggle={replay.toggle}
+        restart={replay.restart}
+        setSpeed={replay.setSpeed}
+        mode={mode}
+        setMode={setMode}
+        liveStatus={live.status}
+      />
 
       <Hero snap={snap} />
 
@@ -75,36 +107,63 @@ export default function Dashboard() {
 }
 
 /* ─────────────────────────────── Header ─────────────────────────────── */
-function Header({ snap, playing, speed, done, toggle, restart, setSpeed }: any) {
-  const s: EngineSnapshot = snap;
-  const status = s.feedStatus;
+function Header({ snap, playing, speed, toggle, restart, setSpeed, mode, setMode, liveStatus }: any) {
+  const s: EngineSnapshot | null = snap;
+  const status = s?.feedStatus ?? "connected";
   const color = status === "suspended" || status === "backfilling" ? "text-attack" : "text-shield";
   const dot = status === "suspended" || status === "backfilling" ? "bg-attack" : "bg-shield";
+  const liveLabel =
+    liveStatus === "live" ? "LIVE · TxLINE devnet" :
+    liveStatus === "connecting" ? "connecting…" :
+    liveStatus === "no-creds" ? "live token not set" :
+    liveStatus === "error" ? "live unavailable" : "idle";
   return (
     <header className="flex flex-wrap items-center justify-between gap-4">
       <Link href="/" className="transition hover:opacity-80"><Wordmark size={32} /></Link>
-      <div className="flex items-center gap-3">
-        <div className="glass flex items-center gap-3 px-4 py-2">
-          <span className="text-sm font-medium text-mut">{s.homeTeam}</span>
-          <span className="tnum rounded-md bg-panel2 px-2.5 py-1 text-lg font-semibold">
-            {s.score.home}<span className="px-1 text-mut2">:</span>{s.score.away}
-          </span>
-          <span className="text-sm font-medium text-mut">{s.awayTeam}</span>
-          <span className="tnum ml-1 text-sm text-mut2">{clock(s.clockSeconds)} · {s.phaseLabel}</span>
-        </div>
-        <div className={`chip ${color}`}>
-          <span className={`h-1.5 w-1.5 rounded-full ${dot} ${status === "connected" ? "animate-pulse" : ""}`} />
-          {status}
-        </div>
-        <div className="flex items-center gap-1">
-          <button onClick={toggle} className="chip hover:bg-panel2" title="play/pause">{playing ? "❚❚" : "►"}</button>
-          <button onClick={restart} className="chip hover:bg-panel2" title="restart">⟳</button>
-          {[1, 2, 4].map((x) => (
-            <button key={x} onClick={() => setSpeed(x)} className={`chip ${speed === x ? "text-shield border-shield/40" : "text-mut hover:bg-panel2"}`}>
-              {x}×
+      <div className="flex flex-wrap items-center gap-3">
+        {s && (
+          <div className="glass flex items-center gap-3 px-4 py-2">
+            <span className="text-sm font-medium text-mut">{s.homeTeam}</span>
+            <span className="tnum rounded-md bg-panel2 px-2.5 py-1 text-lg font-semibold">
+              {s.score.home}<span className="px-1 text-mut2">:</span>{s.score.away}
+            </span>
+            <span className="text-sm font-medium text-mut">{s.awayTeam}</span>
+            <span className="tnum ml-1 text-sm text-mut2">{clock(s.clockSeconds)} · {s.phaseLabel}</span>
+          </div>
+        )}
+        <div className="flex items-center rounded-lg border border-hair bg-panel2/50 p-0.5 text-xs">
+          {(["replay", "live"] as const).map((m) => (
+            <button
+              key={m}
+              onClick={() => setMode(m)}
+              className={`rounded-md px-2.5 py-1 capitalize transition ${mode === m ? "bg-panel text-ink shadow-soft" : "text-mut hover:text-ink"}`}
+            >
+              {m}
             </button>
           ))}
         </div>
+        {mode === "live" ? (
+          <div className={`chip ${liveStatus === "live" ? "text-shield" : liveStatus === "no-creds" || liveStatus === "error" ? "text-attack" : "text-mut"}`}>
+            <span className={`h-1.5 w-1.5 rounded-full ${liveStatus === "live" ? "bg-shield animate-pulse" : "bg-mut2"}`} />
+            {liveLabel}
+          </div>
+        ) : (
+          <>
+            <div className={`chip ${color}`}>
+              <span className={`h-1.5 w-1.5 rounded-full ${dot} ${status === "connected" ? "animate-pulse" : ""}`} />
+              {status}
+            </div>
+            <div className="flex items-center gap-1">
+              <button onClick={toggle} className="chip hover:bg-panel2" title="play/pause">{playing ? "❚❚" : "►"}</button>
+              <button onClick={restart} className="chip hover:bg-panel2" title="restart">⟳</button>
+              {[1, 2, 4].map((x) => (
+                <button key={x} onClick={() => setSpeed(x)} className={`chip ${speed === x ? "text-shield border-shield/40" : "text-mut hover:bg-panel2"}`}>
+                  {x}×
+                </button>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </header>
   );

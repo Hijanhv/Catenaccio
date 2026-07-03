@@ -11,7 +11,7 @@ import { EngineSnapshot } from "@/lib/engine/types";
  * A single requestAnimationFrame loop advances a virtual clock; control state
  * lives in refs so the loop is established once and never tears down mid-match.
  */
-export function useReplayEngine() {
+export function useReplayEngine(enabled = true) {
   const engineRef = useRef<CatenaccioEngine | null>(null);
   const eventsRef = useRef<ScriptedEvent[]>([]);
   const idxRef = useRef(0);
@@ -20,6 +20,10 @@ export function useReplayEngine() {
   const speedRef = useRef(1);
   const doneRef = useRef(false);
   const lastSnapRef = useRef(0);
+  const enabledRef = useRef(enabled);
+  useEffect(() => {
+    enabledRef.current = enabled;
+  }, [enabled]);
 
   const [snap, setSnap] = useState<EngineSnapshot | null>(null);
   const [playing, setPlaying] = useState(true);
@@ -62,7 +66,7 @@ export function useReplayEngine() {
       const dt = now - last;
       last = now;
       const engine = engineRef.current;
-      if (engine && playingRef.current && !doneRef.current) {
+      if (enabledRef.current && engine && playingRef.current && !doneRef.current) {
         virtualRef.current += dt * speedRef.current;
         const events = eventsRef.current;
         while (idxRef.current < events.length && events[idxRef.current].playAtMs <= virtualRef.current) {
