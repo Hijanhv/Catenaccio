@@ -11,3 +11,6 @@ agent-key.json
 .vercel
 next-env.d.ts
 tsconfig.tsbuildinfo
+sharp-detector/target/
+sharp-detector/signals.jsonl
+signals.jsonl

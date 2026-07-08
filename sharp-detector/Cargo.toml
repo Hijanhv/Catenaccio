@@ -1,0 +1,23 @@
+[package]
+name = "sharp-detector"
+version = "0.1.0"
+edition = "2021"
+description = "Standalone TxLINE sharp-movement detector: flags significant in-play odds shifts every 60s and tracks whether they predicted the outcome."
+
+[[bin]]
+name = "sharp-detector"
+path = "src/main.rs"
+
+[dependencies]
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "time", "sync", "signal"] }
+reqwest = { version = "0.12", default-features = false, features = ["json", "stream", "rustls-tls"] }
+futures-util = "0.3"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+anyhow = "1"
+chrono = "0.4"
+dotenvy = "0.15"
+
+[profile.release]
+opt-level = 3
+lto = true

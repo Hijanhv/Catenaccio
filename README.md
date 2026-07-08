@@ -198,6 +198,13 @@ and where it diverges from the market is a signal:
 These are the agent's signal-detection output: the thing a human trader or another bot
 would act on. They are shown live on the dashboard and exposed over MCP (`get_signals`).
 
+There is also a **standalone signal detector written in Rust** in
+[`sharp-detector/`](sharp-detector/): a single compiled binary that streams the odds feed,
+flags significant shifts every 60 seconds, and tracks a follow-through hit-rate (did the move
+predict continued direction?). It uses Rust because that is the right tool for a lean,
+always-on monitor a desk leaves running; it is unit-tested (`cargo test`) and reuses the same
+devnet credentials.
+
 ## Settlement
 
 At full time the agent has to close out its own positions. Rather than grade them itself,
@@ -366,9 +373,10 @@ lib/txline/     auth, resilient SSE client, payload normaliser
 lib/onchain/    Memo anchoring (solana.ts) and validate_stat settlement (settlement.ts)
 components/     dashboard, landing page, illustration, logo
 mcp/            MCP server
-scripts/        agent, subscribe (devnet auth flow), live, backtest, sweep
+scripts/        agent, subscribe (devnet auth flow), live, anchor, verify, backtest, sweep
 tests/          Vitest suites
 onchain/        optional Anchor program and notes
+sharp-detector/ standalone Sharp Movement Detector (Rust binary, unit-tested)
 ```
 
 ## Limitations
