@@ -194,7 +194,7 @@ function Hero({ snap }: { snap: EngineSnapshot }) {
       transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
     >
       {/* animated gradient top edge */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-[3px] animate-gradient bg-[linear-gradient(100deg,#077E57,#0AA06E,#22C58C,#4F9CF9,#0AA06E)] bg-[length:220%_auto]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[3px] animate-gradient bg-[linear-gradient(100deg,#0C7A3E,#12924E,#35C46B,#4F9CF9,#12924E)] bg-[length:220%_auto]" />
       {/* goal confetti */}
       <Celebration keyId={justGoal ? `${snap.lastGoal!.team}-${snap.lastGoal!.clockSeconds}` : null} />
 
@@ -303,8 +303,8 @@ function FlashNum({ v, className = "" }: { v: string; className?: string }) {
   return (
     <motion.span
       key={v}
-      initial={{ backgroundColor: "rgba(10,160,110,0.20)" }}
-      animate={{ backgroundColor: "rgba(10,160,110,0)" }}
+      initial={{ backgroundColor: "rgba(18,146,78,0.20)" }}
+      animate={{ backgroundColor: "rgba(18,146,78,0)" }}
       transition={{ duration: 0.7 }}
       className={`tnum inline-block rounded px-1 ${className}`}
     >
@@ -370,7 +370,7 @@ function PnlPanel({ snap, net, history }: { snap: EngineSnapshot; net: number; h
   const up = history.length < 2 || net >= history[0];
   return (
     <Panel title="P&L" hint="fees included">
-      <div className="text-3xl font-semibold" style={{ color: net >= 0 ? "#0AA06E" : "#E5484D" }}>
+      <div className="text-3xl font-semibold" style={{ color: net >= 0 ? "#12924E" : "#E5342B" }}>
         <AnimatedNumber value={net} format={usd} className="tnum" />
       </div>
       <div className="mt-2">
@@ -400,7 +400,7 @@ function RiskPanel({ snap }: { snap: EngineSnapshot }) {
           initial={false}
           animate={{ width: `${util * 100}%` }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          style={{ background: snap.risk.killSwitch ? "#E5484D" : util > 0.75 ? "#C08A1E" : "#0AA06E" }}
+          style={{ background: snap.risk.killSwitch ? "#E5342B" : util > 0.75 ? "#C08A1E" : "#12924E" }}
         />
       </div>
       <div className="mt-3 flex flex-wrap gap-1.5">
@@ -429,7 +429,7 @@ function SignalsPanel({ snap }: { snap: EngineSnapshot }) {
               <div
                 key={q.outcome}
                 title={`${q.outcome} ${pct(q.fair)}`}
-                style={{ width: `${q.fair * 100}%`, background: q.outcome === "Home" ? "#0AA06E" : q.outcome === "Draw" ? "#98A1B0" : "#7C3AED" }}
+                style={{ width: `${q.fair * 100}%`, background: q.outcome === "Home" ? "#12924E" : q.outcome === "Draw" ? "#98A1B0" : "#7C3AED" }}
               />
             ))}
           </div>
@@ -491,7 +491,7 @@ function SettlementRow({ r }: { r: SettlementReceipt }) {
       </div>
       <div className="mt-1 flex items-center justify-between">
         <span className="font-mono text-[10px] text-mut">{r.predicate}</span>
-        <span className="tnum text-xs" style={{ color: r.pnl >= 0 ? "#0AA06E" : "#E5484D" }}>{usd(r.pnl)}</span>
+        <span className="tnum text-xs" style={{ color: r.pnl >= 0 ? "#12924E" : "#E5342B" }}>{usd(r.pnl)}</span>
       </div>
     </div>
   );

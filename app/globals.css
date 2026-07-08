@@ -12,25 +12,25 @@ html {
 
 html,
 body {
-  background: #f6f8fb;
-  color: #0b0f16;
+  background: #f3f8f3;
+  color: #0c1a10;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-/* soft "stadium daylight" wash */
+/* soft "pitch daylight" wash — grass green + a hint of ball red */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -2;
   background:
-    radial-gradient(1000px 560px at 8% -10%, rgba(10, 160, 110, 0.10), transparent 60%),
-    radial-gradient(880px 520px at 100% -6%, rgba(79, 156, 249, 0.07), transparent 55%),
-    #f6f8fb;
+    radial-gradient(1000px 560px at 8% -10%, rgba(42, 162, 85, 0.13), transparent 60%),
+    radial-gradient(880px 520px at 100% -6%, rgba(229, 52, 43, 0.06), transparent 55%),
+    #f3f8f3;
 }
 
-/* cheerful, slowly-drifting colour blobs behind everything */
+/* slowly-drifting pitch colour blobs behind everything */
 body::after {
   content: "";
   position: fixed;
@@ -38,10 +38,10 @@ body::after {
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(420px 420px at 18% 22%, rgba(34, 197, 140, 0.14), transparent 62%),
-    radial-gradient(460px 460px at 82% 18%, rgba(79, 156, 249, 0.10), transparent 62%),
-    radial-gradient(380px 380px at 68% 82%, rgba(245, 179, 1, 0.08), transparent 62%),
-    radial-gradient(360px 360px at 30% 88%, rgba(124, 58, 237, 0.07), transparent 62%);
+    radial-gradient(440px 440px at 16% 20%, rgba(42, 162, 85, 0.16), transparent 62%),
+    radial-gradient(460px 460px at 84% 16%, rgba(229, 52, 43, 0.09), transparent 62%),
+    radial-gradient(400px 400px at 70% 84%, rgba(53, 196, 107, 0.13), transparent 62%),
+    radial-gradient(360px 360px at 28% 90%, rgba(245, 179, 1, 0.06), transparent 62%);
   animation: drift 22s ease-in-out infinite;
 }
 
@@ -68,15 +68,23 @@ body::after {
     font-variant-numeric: tabular-nums;
     font-feature-settings: "tnum";
   }
-  /* animated green→mint→sky gradient text for headline accents */
+  /* animated grass gradient text for headline accents */
   .grad-text {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(100deg, #077E57, #0AA06E, #22C58C, #4F9CF9, #0AA06E);
+    background-image: linear-gradient(100deg, #0C7A3E, #12924E, #2AA255, #35C46B, #12924E);
     background-size: 220% auto;
     animation: gradientShift 12s ease infinite;
   }
+  /* animated ball-red gradient text, for energetic accents */
+  .grad-red {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(100deg, #C21E1C, #E5342B, #ff6a5f, #E5342B);
+    background-size: 220% auto;
+    animation: gradientShift 10s ease infinite;
+  }
+  /* primary CTA = the ball, in red */
   .btn-primary {
-    @apply relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full bg-shield px-5 py-2.5 text-sm font-semibold text-white shadow-glow transition hover:bg-shield2 hover:shadow-lift active:scale-[0.98];
+    @apply relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full bg-attack px-5 py-2.5 text-sm font-semibold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-attack2 hover:shadow-lift active:scale-[0.98];
   }
   /* moving highlight sweep for primary buttons */
   .btn-primary::after {

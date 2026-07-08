@@ -40,8 +40,8 @@ export function HeroArt() {
       <svg viewBox="0 0 460 380" className="absolute inset-0 h-full w-full">
         <defs>
           <radialGradient id="lift" cx="50%" cy="50%" r="50%">
-            <stop offset="0" stopColor="#0AA06E" stopOpacity="0.18" />
-            <stop offset="1" stopColor="#0AA06E" stopOpacity="0" />
+            <stop offset="0" stopColor="#12924E" stopOpacity="0.18" />
+            <stop offset="1" stopColor="#12924E" stopOpacity="0" />
           </radialGradient>
           <filter id="dotGlow" x="-200%" y="-200%" width="500%" height="500%">
             <feGaussianBlur stdDeviation="4" result="b" />
@@ -62,7 +62,7 @@ export function HeroArt() {
         <motion.polyline
           points={TREND}
           fill="none"
-          stroke="#0AA06E"
+          stroke="#12924E"
           strokeOpacity="0.5"
           strokeWidth="2"
           strokeLinecap="round"
@@ -74,7 +74,7 @@ export function HeroArt() {
 
         {/* candlesticks — wick fades in, body grows up from its base */}
         {CANDLES.map((c, i) => {
-          const color = c.up ? "#0AA06E" : "#E5484D";
+          const color = c.up ? "#12924E" : "#E5342B";
           const delay = 0.1 + i * 0.09;
           return (
             <g key={i}>
@@ -96,7 +96,7 @@ export function HeroArt() {
 
         {/* live-price marker sweeping the chart */}
         <motion.circle
-          r="5.5" fill="#0AA06E" filter="url(#dotGlow)"
+          r="5.5" fill="#12924E" filter="url(#dotGlow)"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, cx: MIDS.map((m) => m[0]), cy: MIDS.map((m) => m[1]) }}
           transition={{ opacity: { delay: 1.6, duration: 0.4 }, cx: { delay: 1.6, duration: 3.6, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }, cy: { delay: 1.6, duration: 3.6, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" } }}
@@ -125,8 +125,8 @@ export function HeroArt() {
         >
           <defs>
             <linearGradient id="ballg" x1="14" y1="8" x2="50" y2="56" gradientUnits="userSpaceOnUse">
-              <stop stopColor="#22C58C" />
-              <stop offset="1" stopColor="#077E57" />
+              <stop stopColor="#35C46B" />
+              <stop offset="1" stopColor="#0C7A3E" />
             </linearGradient>
           </defs>
           <circle cx="32" cy="32" r="25" fill="#fff" stroke="#0B0F16" strokeWidth="2.2" />

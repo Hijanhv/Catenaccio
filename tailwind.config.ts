@@ -5,21 +5,25 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // bright "stadium daylight" surface ramp
-        base: "#F6F8FB",
+        // "pitch daylight" surface ramp — a whisper of grass in the paper
+        base: "#F3F8F3",
         panel: "#FFFFFF",
-        panel2: "#EEF1F6",
-        hair: "rgba(12,18,32,0.08)",
-        // signature accents
-        shield: "#0AA06E", // protected / our edge / up-candle green
-        shield2: "#077E57",
-        attack: "#E5484D", // courtsiding / leak / down-candle red
+        panel2: "#EBF2EC",
+        hair: "rgba(12,32,18,0.09)",
+        // football signature: grass green = us/defended/profit, ball red = threat/leak + energy
+        shield: "#12924E", // grass green — our edge / up
+        shield2: "#0C7A3E",
+        attack: "#E5342B", // ball red — courtsider / leak / down + bold accent
+        attack2: "#C21E1C",
         gold: "#C08A1E",
-        ink: "#0B0F16", // near-black text
-        mut: "#566173",
-        mut2: "#98A1B0",
-        // cheerful secondary accents (used sparingly, for gradients + highlights)
-        mint: "#22C58C",
+        ink: "#0C1A10", // near-black, faintly green
+        mut: "#4E5F53",
+        mut2: "#8DA093",
+        // pitch + cheerful accents
+        grass: "#2AA255",
+        pitch: "#1E8145",
+        mint: "#35C46B",
+        chalk: "#F4F8F3",
         sky: "#4F9CF9",
         grape: "#7C3AED",
         sun: "#F5B301",

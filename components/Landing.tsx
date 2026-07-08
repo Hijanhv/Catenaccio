@@ -1,9 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { LogoMark, Wordmark } from "./Logo";
-import { HeroArt } from "./HeroArt";
+
+const Pitch3D = dynamic(() => import("./Pitch3D"), {
+  ssr: false,
+  loading: () => <div className="h-[420px] w-full rounded-3xl shimmer" />,
+});
 
 const easeOut = [0.22, 1, 0.36, 1] as const;
 /** fade + rise into view once */
@@ -102,8 +107,8 @@ export default function Landing() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.1, ease: easeOut }}
         >
-          <div className="mx-auto w-full max-w-[460px]">
-            <HeroArt />
+          <div className="mx-auto h-[420px] w-full max-w-[520px]">
+            <Pitch3D />
           </div>
         </motion.div>
       </section>

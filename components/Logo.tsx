@@ -1,36 +1,51 @@
 "use client";
 
 /**
- * Catenaccio mark — an aesthetic football. Clean geometric soccer ball with an
- * emerald centre panel (our signature pitch-green) and charcoal seams. Reads
- * crisp from 16px to 160px.
+ * Catenaccio mark — a red football ringed by grass green. Classic white panels
+ * (centre pentagon + seams) keep it unmistakably a football; the green ring is the
+ * pitch. Reads crisp from 16px to 160px. ("Catenaccio" = the defensive bolt.)
  */
 
 export function LogoMark({ size = 36, className = "" }: { size?: number; className?: string }) {
   const id = `ball-${Math.round(size)}`;
-  // central pentagon
-  const pent = "32,23 40.56,29.22 37.29,39.28 26.71,39.28 23.44,29.22";
-  // seams from each pentagon vertex outward
+  const pent = "32,22 41.03,28.56 37.58,39.18 26.42,39.18 22.97,28.56";
   const seams: [number, number, number, number][] = [
-    [32, 23, 32, 8],
-    [40.56, 29.22, 54.82, 24.58],
-    [37.29, 39.28, 46.11, 51.42],
-    [26.71, 39.28, 17.89, 51.42],
-    [23.44, 29.22, 9.18, 24.58],
+    [32, 22, 32, 8],
+    [41.03, 28.56, 55.3, 24.2],
+    [37.58, 39.18, 46.9, 51.6],
+    [26.42, 39.18, 17.1, 51.6],
+    [22.97, 28.56, 8.7, 24.2],
+  ];
+  // small panels at the outer seam tips, for a real football read
+  const tips: [number, number][] = [
+    [32, 8],
+    [55.3, 24.2],
+    [46.9, 51.6],
+    [17.1, 51.6],
+    [8.7, 24.2],
   ];
   return (
     <svg width={size} height={size} viewBox="0 0 64 64" fill="none" className={className} aria-hidden>
       <defs>
-        <linearGradient id={id} x1="14" y1="8" x2="50" y2="56" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#22C58C" />
-          <stop offset="1" stopColor="#077E57" />
+        <linearGradient id={id} x1="12" y1="8" x2="52" y2="58" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#EF4A3F" />
+          <stop offset="1" stopColor="#C21E1C" />
         </linearGradient>
       </defs>
-      <circle cx="32" cy="32" r="25" fill="#fff" stroke="#0B0F16" strokeWidth="2.4" />
+      {/* pitch-green ring */}
+      <circle cx="32" cy="32" r="30" fill="none" stroke="#12924E" strokeWidth="3" />
+      {/* the red ball */}
+      <circle cx="32" cy="32" r="25.5" fill={`url(#${id})`} stroke="#0C1A10" strokeWidth="1.4" />
+      {/* white seams */}
       {seams.map(([x1, y1, x2, y2], i) => (
-        <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#0B0F16" strokeWidth="1.8" strokeLinecap="round" />
+        <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#ffffff" strokeWidth="1.8" strokeLinecap="round" opacity="0.95" />
       ))}
-      <polygon points={pent} fill={`url(#${id})`} />
+      {/* outer white panels */}
+      {tips.map(([cx, cy], i) => (
+        <circle key={i} cx={cx} cy={cy} r="2.1" fill="#ffffff" opacity="0.9" />
+      ))}
+      {/* centre white pentagon */}
+      <polygon points={pent} fill="#ffffff" />
     </svg>
   );
 }

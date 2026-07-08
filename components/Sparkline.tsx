@@ -18,7 +18,7 @@ export function Sparkline({ data, height = 44, up = true }: { data: number[]; he
   const pts = data.map((v, i) => `${x(i).toFixed(1)},${y(v).toFixed(1)}`);
   const line = `M ${pts.join(" L ")}`;
   const area = `${line} L ${x(data.length - 1)},${h} L ${x(0)},${h} Z`;
-  const stroke = up ? "#0AA06E" : "#E5484D";
+  const stroke = up ? "#12924E" : "#E5342B";
   const lastX = x(data.length - 1);
   const lastY = y(data[data.length - 1]);
 

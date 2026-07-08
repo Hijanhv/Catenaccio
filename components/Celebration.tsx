@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 
-const COLORS = ["#0AA06E", "#22C58C", "#4F9CF9", "#F5B301", "#7C3AED"];
+const COLORS = ["#12924E", "#35C46B", "#E5342B", "#F5B301", "#ffffff"];
 // deterministic burst directions so it renders identically each time
 const PARTICLES = Array.from({ length: 22 }, (_, i) => {
   const a = (i / 22) * Math.PI * 2;

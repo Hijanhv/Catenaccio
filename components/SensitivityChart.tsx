@@ -44,22 +44,22 @@ export function SensitivityChart({ avgLeakPerGoal, repriceMs }: { avgLeakPerGoal
     <svg width="100%" viewBox={`0 0 ${W} ${H}`} className="overflow-visible">
       <defs>
         <linearGradient id="leakFill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#E5484D" stopOpacity="0.28" />
-          <stop offset="1" stopColor="#E5484D" stopOpacity="0.03" />
+          <stop offset="0" stopColor="#E5342B" stopOpacity="0.28" />
+          <stop offset="1" stopColor="#E5342B" stopOpacity="0.03" />
         </linearGradient>
       </defs>
       <line x1={PAD.l} y1={H - PAD.b} x2={W - PAD.r} y2={H - PAD.b} stroke="rgba(12,18,32,0.14)" />
       <line x1={PAD.l} y1={PAD.t} x2={PAD.l} y2={H - PAD.b} stroke="rgba(12,18,32,0.14)" />
-      <path d={area} fill="url(#leakFill)" stroke="#E5484D" strokeWidth="1.5" />
+      <path d={area} fill="url(#leakFill)" stroke="#E5342B" strokeWidth="1.5" />
 
-      <line x1={x(cat.ms)} y1={PAD.t} x2={x(cat.ms)} y2={H - PAD.b} stroke="#0AA06E" strokeDasharray="3 3" strokeWidth="1" />
-      <circle cx={x(cat.ms)} cy={y(cat.leak)} r="4" fill="#0AA06E" />
-      <text x={x(cat.ms) + 6} y={PAD.t + 10} fill="#0AA06E" fontSize="9" className="font-mono">
+      <line x1={x(cat.ms)} y1={PAD.t} x2={x(cat.ms)} y2={H - PAD.b} stroke="#12924E" strokeDasharray="3 3" strokeWidth="1" />
+      <circle cx={x(cat.ms)} cy={y(cat.leak)} r="4" fill="#12924E" />
+      <text x={x(cat.ms) + 6} y={PAD.t + 10} fill="#12924E" fontSize="9" className="font-mono">
         Catenaccio {Math.round(cat.ms)}ms
       </text>
 
-      <circle cx={x(book.ms)} cy={y(book.leak)} r="4" fill="#E5484D" />
-      <text x={x(book.ms) - 4} y={y(book.leak) - 8} fill="#E5484D" fontSize="9" textAnchor="end" className="font-mono">
+      <circle cx={x(book.ms)} cy={y(book.leak)} r="4" fill="#E5342B" />
+      <text x={x(book.ms) - 4} y={y(book.leak) - 8} fill="#E5342B" fontSize="9" textAnchor="end" className="font-mono">
         broadcast book ~6s
       </text>
 
