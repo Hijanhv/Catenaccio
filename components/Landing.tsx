@@ -1,8 +1,25 @@
 "use client";
 
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { LogoMark, Wordmark } from "./Logo";
 import { HeroArt } from "./HeroArt";
+
+const easeOut = [0.22, 1, 0.36, 1] as const;
+/** fade + rise into view once */
+function Reveal({ children, delay = 0, className = "" }: { children: React.ReactNode; delay?: number; className?: string }) {
+  return (
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, y: 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.55, delay, ease: easeOut }}
+    >
+      {children}
+    </motion.div>
+  );
+}
 
 const STATS = [
   { k: "~400 ms", v: "reprice on a goal" },
@@ -52,10 +69,10 @@ export default function Landing() {
 
       {/* ── hero ── */}
       <section className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-12 md:grid-cols-2 md:py-20">
-        <div>
-          <div className="eyebrow"><span className="h-1.5 w-1.5 rounded-full bg-shield" />TxLINE × Solana · Trading Tools &amp; Agents</div>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: easeOut }}>
+          <div className="eyebrow"><span className="h-1.5 w-1.5 rounded-full bg-shield animate-pulse" />TxLINE × Solana · Trading Tools &amp; Agents</div>
           <h1 className="mt-5 text-4xl font-semibold leading-[1.05] tracking-tight text-ink sm:text-5xl md:text-6xl">
-            The defense for your <span className="text-shield">in-play</span> prices.
+            The defense for your <span className="grad-text">in-play</span> prices.
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-mut">
             An autonomous football market-making agent that reprices in <strong className="text-ink">~400 ms</strong> the
@@ -66,19 +83,29 @@ export default function Landing() {
             <a href="#how" className="btn-ghost">See how it works</a>
           </div>
           <div className="mt-9 grid grid-cols-2 gap-4 sm:grid-cols-4">
-            {STATS.map((s) => (
-              <div key={s.k}>
-                <div className="tnum text-2xl font-semibold text-ink">{s.k}</div>
+            {STATS.map((s, i) => (
+              <motion.div
+                key={s.k}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.35 + i * 0.09, ease: easeOut }}
+              >
+                <div className="tnum text-2xl font-semibold grad-text">{s.k}</div>
                 <div className="text-xs text-mut">{s.v}</div>
-              </div>
+              </motion.div>
             ))}
           </div>
-        </div>
-        <div className="order-first md:order-last">
+        </motion.div>
+        <motion.div
+          className="order-first md:order-last"
+          initial={{ opacity: 0, scale: 0.94 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.1, ease: easeOut }}
+        >
           <div className="mx-auto w-full max-w-[460px]">
             <HeroArt />
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* ── the problem ── */}
@@ -119,12 +146,19 @@ export default function Landing() {
         <h2 className="text-center text-2xl font-semibold tracking-tight text-ink sm:text-3xl">How it works</h2>
         <p className="mx-auto mt-3 max-w-2xl text-center text-mut">Four steps, fully autonomous, running on TxLINE’s verified feed.</p>
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {STEPS.map((s) => (
-            <div key={s.n} className="glass p-6">
-              <div className="font-mono text-sm text-shield">{s.n}</div>
+          {STEPS.map((s, i) => (
+            <motion.div
+              key={s.n}
+              className="glass-hover group p-6"
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.5, delay: i * 0.08, ease: easeOut }}
+            >
+              <div className="font-mono text-sm text-shield transition group-hover:animate-risePop">{s.n}</div>
               <div className="mt-2 text-lg font-semibold text-ink">{s.t}</div>
               <div className="mt-2 text-sm leading-relaxed text-mut">{s.d}</div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </section>
@@ -133,37 +167,53 @@ export default function Landing() {
       <section className="mx-auto max-w-6xl px-5 py-8">
         <h2 className="text-center text-2xl font-semibold tracking-tight text-ink sm:text-3xl">What&apos;s inside</h2>
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {FEATURES.map((f) => (
-            <div key={f.t} className="glass p-6 transition hover:shadow-soft">
-              <div className="h-1.5 w-6 rounded-full bg-shield" />
+          {FEATURES.map((f, i) => (
+            <motion.div
+              key={f.t}
+              className="glass-hover group p-6"
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.5, delay: (i % 3) * 0.09, ease: easeOut }}
+            >
+              <div className="h-1.5 w-6 rounded-full bg-shield transition-all duration-300 group-hover:w-12 group-hover:bg-mint" />
               <div className="mt-4 text-lg font-semibold text-ink">{f.t}</div>
               <div className="mt-2 text-sm leading-relaxed text-mut">{f.d}</div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </section>
 
       {/* ── numbers band ── */}
       <section className="mx-auto max-w-6xl px-5 py-16">
-        <div className="rounded-2xl border border-hair bg-ink p-8 text-white sm:p-12">
-          <div className="text-xs uppercase tracking-[0.2em] text-white/50">Backtested across 500 simulated matches</div>
-          <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-4">
-            {[
-              { k: "+$2,629", v: "mean P&L / match" },
-              { k: "3.16", v: "Sharpe" },
-              { k: "99%", v: "profitable" },
-              { k: "$639", v: "arb prevented / match" },
-            ].map((s) => (
-              <div key={s.v}>
-                <div className="tnum text-3xl font-semibold text-[#3ED9A4]">{s.k}</div>
-                <div className="mt-1 text-sm text-white/60">{s.v}</div>
-              </div>
-            ))}
+        <Reveal className="relative overflow-hidden rounded-2xl border border-hair bg-ink p-8 text-white shadow-lift sm:p-12">
+          <div className="pointer-events-none absolute inset-0 animate-gradient bg-[radial-gradient(600px_240px_at_10%_-20%,rgba(34,197,140,0.22),transparent_60%),radial-gradient(600px_240px_at_100%_120%,rgba(79,156,249,0.18),transparent_60%)] bg-[length:200%_200%]" />
+          <div className="relative">
+            <div className="text-xs uppercase tracking-[0.2em] text-white/50">Backtested across 500 simulated matches</div>
+            <div className="mt-6 grid grid-cols-2 gap-6 sm:grid-cols-4">
+              {[
+                { k: "+$2,629", v: "mean P&L / match" },
+                { k: "3.16", v: "Sharpe" },
+                { k: "99%", v: "profitable" },
+                { k: "$639", v: "arb prevented / match" },
+              ].map((s, i) => (
+                <motion.div
+                  key={s.v}
+                  initial={{ opacity: 0, y: 14 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.1, ease: easeOut }}
+                >
+                  <div className="tnum text-3xl font-semibold text-[#3ED9A4]">{s.k}</div>
+                  <div className="mt-1 text-sm text-white/60">{s.v}</div>
+                </motion.div>
+              ))}
+            </div>
+            <p className="mt-6 max-w-2xl text-sm text-white/50">
+              The edge is operational — we earn the spread and never get picked off. We never claim to predict football.
+            </p>
           </div>
-          <p className="mt-6 max-w-2xl text-sm text-white/50">
-            The edge is operational — we earn the spread and never get picked off. We never claim to predict football.
-          </p>
-        </div>
+        </Reveal>
       </section>
 
       {/* ── CTA ── */}

@@ -1,12 +1,15 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { useReplayEngine } from "./useReplayEngine";
 import { useLiveEngine } from "./useLiveEngine";
 import { LogoMark, Wordmark } from "./Logo";
 import { SensitivityChart } from "./SensitivityChart";
+import { AnimatedNumber } from "./AnimatedNumber";
+import { Celebration } from "./Celebration";
+import { Sparkline } from "./Sparkline";
 import { MARKET_LABEL, MarketBook, Fill, EngineSnapshot, Signal, SettlementReceipt } from "@/lib/engine/types";
 import { verifyMerkleProof } from "@/lib/engine/merkle";
 import { hashHex } from "@/lib/engine/math/sha256";
@@ -20,9 +23,20 @@ export default function Dashboard() {
   const replay = useReplayEngine(mode === "replay");
   const live = useLiveEngine(mode === "live");
   const [verifyFill, setVerifyFill] = useState<Fill | null>(null);
+  const [pnlHistory, setPnlHistory] = useState<number[]>([]);
 
   const snap = mode === "live" ? live.snap : replay.snap;
   const engineRef = mode === "live" ? live.engineRef : replay.engineRef;
+
+  useEffect(() => setPnlHistory([]), [mode]);
+  useEffect(() => {
+    if (!snap) return;
+    setPnlHistory((h) => {
+      const next = [...h, snap.realizedPnl + snap.unrealizedPnl];
+      return next.length > 90 ? next.slice(-90) : next;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [snap?.ts]);
 
   if (!snap) {
     return (
@@ -74,8 +88,8 @@ export default function Dashboard() {
         {/* left: markets + feed */}
         <div className="flex flex-col gap-5">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            {snap.books.map((b) => (
-              <MarketCard key={b.market} book={b} consensus={snap.consensus[b.market]} />
+            {snap.books.map((b, i) => (
+              <MarketCard key={b.market} book={b} consensus={snap.consensus[b.market]} index={i} />
             ))}
           </div>
           <Feed snap={snap} onVerify={setVerifyFill} />
@@ -84,7 +98,7 @@ export default function Dashboard() {
         {/* right: signals → pnl → risk → settlement → sensitivity (the agent's lifecycle) */}
         <div className="flex flex-col gap-5">
           <SignalsPanel snap={snap} />
-          <PnlPanel snap={snap} net={net} />
+          <PnlPanel snap={snap} net={net} history={pnlHistory} />
           <RiskPanel snap={snap} />
           <SettlementPanel snap={snap} />
           <Panel title="Latency-arb defended" hint="measured, not staged">
@@ -173,13 +187,25 @@ function Header({ snap, playing, speed, toggle, restart, setSpeed, mode, setMode
 function Hero({ snap }: { snap: EngineSnapshot }) {
   const justGoal = snap.lastGoal && snap.feedStatus !== "suspended";
   return (
-    <div className="glass relative mt-5 overflow-hidden p-6">
+    <motion.div
+      className="glass animate-glowPulse relative mt-5 overflow-hidden p-6"
+      initial={{ opacity: 0, y: 14 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+    >
+      {/* animated gradient top edge */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[3px] animate-gradient bg-[linear-gradient(100deg,#077E57,#0AA06E,#22C58C,#4F9CF9,#0AA06E)] bg-[length:220%_auto]" />
+      {/* goal confetti */}
+      <Celebration keyId={justGoal ? `${snap.lastGoal!.team}-${snap.lastGoal!.clockSeconds}` : null} />
+
       <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-[1.3fr_1fr_1fr]">
         <div>
           <div className="text-[11px] uppercase tracking-[0.2em] text-mut">Latency-arbitrage prevented</div>
-          <div className="tnum mt-1 text-5xl font-semibold text-shield" style={{ textShadow: "0 0 30px rgba(10,160,110,0.20)" }}>
-            {usd(snap.arbPrevented)}
-          </div>
+          <AnimatedNumber
+            value={snap.arbPrevented}
+            format={usd}
+            className="tnum mt-1 block text-5xl font-semibold grad-text"
+          />
           <div className="mt-1 text-sm text-mut">
             a broadcast-delayed book would have leaked <span className="tnum text-attack line-through">{usd(snap.arbLeakedBaseline)}</span>
           </div>
@@ -187,15 +213,16 @@ function Hero({ snap }: { snap: EngineSnapshot }) {
 
         <div className="border-l border-hair pl-6">
           <div className="text-[11px] uppercase tracking-[0.2em] text-mut">Last reprice latency</div>
-          <div className="tnum mt-1 text-4xl font-semibold">
-            {snap.lastRepriceMs ?? "—"}<span className="ml-1 text-lg text-mut">ms</span>
+          <div className="tnum mt-1 text-4xl font-semibold text-ink">
+            {snap.lastRepriceMs != null ? <AnimatedNumber value={snap.lastRepriceMs} format={(n) => Math.round(n).toString()} duration={0.6} /> : "—"}
+            <span className="ml-1 text-lg text-mut">ms</span>
           </div>
           <div className="mt-1 text-sm text-mut">suspend → recompute → reopen</div>
         </div>
 
         <div className="border-l border-hair pl-6">
           <div className="text-[11px] uppercase tracking-[0.2em] text-mut">Decisions anchored</div>
-          <div className="tnum mt-1 text-4xl font-semibold">{snap.decisionCount}</div>
+          <AnimatedNumber value={snap.decisionCount} className="tnum mt-1 block text-4xl font-semibold text-ink" />
           <div className="mt-1 truncate font-mono text-xs text-mut">root {snap.merkleRoot.slice(0, 18)}…</div>
         </div>
       </div>
@@ -204,23 +231,28 @@ function Hero({ snap }: { snap: EngineSnapshot }) {
         {justGoal && (
           <motion.div
             key={`${snap.lastGoal!.team}-${snap.lastGoal!.clockSeconds}`}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className="pointer-events-none absolute right-5 top-5 chip border-shield/40 text-shield"
+            initial={{ opacity: 0, y: 8, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="pointer-events-none absolute right-5 top-5 chip border-shield/40 text-shield shadow-glow"
           >
             ⚡ {snap.lastGoal!.team === "home" ? snap.homeTeam : snap.awayTeam} scored · repriced {snap.lastGoal!.repriceMs}ms · courtsider rejected
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </motion.div>
   );
 }
 
 /* ─────────────────────────────── Courtsider Cam ─────────────────────────────── */
 function CourtsiderCam({ snap }: { snap: EngineSnapshot }) {
   return (
-    <div className="glass mt-5 p-5">
+    <motion.div
+      className="glass mt-5 p-5"
+      initial={{ opacity: 0, y: 14 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.06, ease: [0.22, 1, 0.36, 1] }}
+    >
       <div className="mb-3 flex items-center justify-between">
         <div className="text-sm font-medium">
           Courtsider Cam <span className="text-mut2">· the same goal, two books</span>
@@ -228,22 +260,31 @@ function CourtsiderCam({ snap }: { snap: EngineSnapshot }) {
         <span className="chip text-mut">{snap.lastGoal ? `last goal ${Math.floor(snap.lastGoal.clockSeconds / 60)}'` : "awaiting first goal"}</span>
       </div>
       <div className="grid grid-cols-[1fr_auto_1fr] items-stretch gap-4">
-        <div className="rounded-xl border border-attack/30 bg-attack/5 p-4">
+        <div className="rounded-xl border border-attack/30 bg-attack/5 p-4 transition hover:-translate-y-0.5">
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-attack">Book on a broadcast feed</span>
             <span className="chip border-attack/40 text-attack">~6 s reprice</span>
           </div>
           <div className="mt-3 text-[11px] uppercase tracking-wider text-mut2">picked off — total leaked</div>
-          <div className="tnum text-3xl font-semibold text-attack">{usd(snap.arbLeakedBaseline)}</div>
+          <AnimatedNumber value={snap.arbLeakedBaseline} format={usd} className="tnum block text-3xl font-semibold text-attack" />
           <div className="mt-2 text-xs text-mut">stale price stays live for seconds → the courtsider profits</div>
         </div>
 
         <div className="flex flex-col items-center justify-center px-1">
-          <motion.div key={snap.lastGoal?.clockSeconds ?? 0} initial={{ scale: 0.6, opacity: 0.4 }} animate={{ scale: 1, opacity: 1 }} className="text-2xl">⚡</motion.div>
+          <motion.div
+            key={snap.lastGoal?.clockSeconds ?? 0}
+            initial={{ scale: 0.5, rotate: -20, opacity: 0.4 }}
+            animate={{ scale: [0.5, 1.25, 1], rotate: [-20, 8, 0], opacity: 1 }}
+            transition={{ duration: 0.6 }}
+            className="text-2xl"
+          >
+            ⚡
+          </motion.div>
           <div className="text-[10px] uppercase tracking-[0.2em] text-mut2">vs</div>
         </div>
 
-        <div className="rounded-xl border border-shield/30 bg-shield/5 p-4">
+        <div className="relative overflow-hidden rounded-xl border border-shield/30 bg-shield/5 p-4 transition hover:-translate-y-0.5">
+          <div className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 skew-x-[-20deg] bg-white/40 animate-sheen" />
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-shield">Catenaccio</span>
             <span className="chip border-shield/40 text-shield">{snap.lastRepriceMs ?? 400} ms reprice</span>
@@ -253,18 +294,38 @@ function CourtsiderCam({ snap }: { snap: EngineSnapshot }) {
           <div className="mt-2 text-xs text-mut">suspended + repriced before any courtsider can act</div>
         </div>
       </div>
-    </div>
+    </motion.div>
+  );
+}
+
+/* a number that flashes green when it changes (remounts on value change) */
+function FlashNum({ v, className = "" }: { v: string; className?: string }) {
+  return (
+    <motion.span
+      key={v}
+      initial={{ backgroundColor: "rgba(10,160,110,0.20)" }}
+      animate={{ backgroundColor: "rgba(10,160,110,0)" }}
+      transition={{ duration: 0.7 }}
+      className={`tnum inline-block rounded px-1 ${className}`}
+    >
+      {v}
+    </motion.span>
   );
 }
 
 /* ─────────────────────────────── Market card ─────────────────────────────── */
-function MarketCard({ book, consensus }: { book: MarketBook; consensus: number[] }) {
+function MarketCard({ book, consensus, index = 0 }: { book: MarketBook; consensus: number[]; index?: number }) {
   return (
-    <div className={`glass relative p-4 transition ${book.suspended ? "opacity-60" : ""}`}>
+    <motion.div
+      className={`glass-hover relative p-4 ${book.suspended ? "opacity-60" : ""}`}
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.45, delay: 0.05 + index * 0.08, ease: [0.22, 1, 0.36, 1] }}
+    >
       <div className="flex items-center justify-between">
         <div className="text-sm font-medium">{MARKET_LABEL[book.market]}</div>
         {book.suspended ? (
-          <span className="chip border-attack/40 text-attack">suspended</span>
+          <span className="chip border-attack/40 text-attack animate-pulse">suspended</span>
         ) : (
           <span className="chip text-mut">{(book.spreadBps / 100).toFixed(1)}% spread</span>
         )}
@@ -276,33 +337,45 @@ function MarketCard({ book, consensus }: { book: MarketBook; consensus: number[]
         {book.quotes.map((q, i) => (
           <div key={q.outcome} className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-2">
             <span className="truncate text-sm">{q.outcome}</span>
-            <span className="tnum text-right text-sm text-shield">{book.suspended ? "—" : q.bid.toFixed(2)}</span>
-            <span className="tnum text-right text-sm text-attack/90">{book.suspended ? "—" : q.ask.toFixed(2)}</span>
+            <span className="text-right text-sm text-shield">{book.suspended ? "—" : <FlashNum v={q.bid.toFixed(2)} />}</span>
+            <span className="text-right text-sm text-attack/90">{book.suspended ? "—" : <FlashNum v={q.ask.toFixed(2)} />}</span>
             <span className="tnum text-right text-xs text-mut" title={`consensus ${pct(consensus[i] ?? 0)}`}>{pct(q.fair)}</span>
           </div>
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 }
 
 /* ─────────────────────────────── PnL & Risk ─────────────────────────────── */
 function Panel({ title, hint, children }: { title: string; hint?: string; children: React.ReactNode }) {
   return (
-    <div className="glass p-4">
+    <motion.div
+      className="glass-hover p-4"
+      initial={{ opacity: 0, y: 14 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+    >
       <div className="mb-3 flex items-center justify-between">
         <div className="text-sm font-medium">{title}</div>
         {hint && <span className="text-[10px] uppercase tracking-wider text-mut2">{hint}</span>}
       </div>
       {children}
-    </div>
+    </motion.div>
   );
 }
 
-function PnlPanel({ snap, net }: { snap: EngineSnapshot; net: number }) {
+function PnlPanel({ snap, net, history }: { snap: EngineSnapshot; net: number; history: number[] }) {
+  const up = history.length < 2 || net >= history[0];
   return (
     <Panel title="P&L" hint="fees included">
-      <div className="tnum text-3xl font-semibold" style={{ color: net >= 0 ? "#0AA06E" : "#E5484D" }}>{usd(net)}</div>
+      <div className="text-3xl font-semibold" style={{ color: net >= 0 ? "#0AA06E" : "#E5484D" }}>
+        <AnimatedNumber value={net} format={usd} className="tnum" />
+      </div>
+      <div className="mt-2">
+        <Sparkline data={history} up={up} />
+      </div>
       <div className="mt-3 grid grid-cols-3 gap-2 text-center">
         <Mini label="Realized" value={usd(snap.realizedPnl)} />
         <Mini label="Unrealized" value={usd(snap.unrealizedPnl)} />
@@ -322,7 +395,13 @@ function RiskPanel({ snap }: { snap: EngineSnapshot }) {
         <span className="tnum">{usd(snap.risk.totalExposure)} <span className="text-mut2">/ {usd(cap)}</span></span>
       </div>
       <div className="mt-2 h-2 overflow-hidden rounded-full bg-panel2">
-        <div className="h-full rounded-full transition-all" style={{ width: `${util * 100}%`, background: snap.risk.killSwitch ? "#E5484D" : util > 0.75 ? "#C08A1E" : "#0AA06E" }} />
+        <motion.div
+          className="h-full rounded-full"
+          initial={false}
+          animate={{ width: `${util * 100}%` }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          style={{ background: snap.risk.killSwitch ? "#E5484D" : util > 0.75 ? "#C08A1E" : "#0AA06E" }}
+        />
       </div>
       <div className="mt-3 flex flex-wrap gap-1.5">
         <span className={`chip ${snap.risk.killSwitch ? "border-attack/40 text-attack" : "text-shield"}`}>kill-switch {snap.risk.killSwitch ? "tripped" : "armed"}</span>
