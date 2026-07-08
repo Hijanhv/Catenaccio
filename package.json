@@ -14,6 +14,7 @@
     "live": "tsx scripts/live.ts",
     "anchor": "tsx scripts/anchor.ts",
     "verify": "tsx scripts/verify.ts",
+    "arena": "tsx scripts/arena.ts",
     "sweep": "tsx scripts/sweep.ts",
     "backtest": "tsx scripts/backtest.ts",
     "demo": "tsx scripts/agent.ts --demo",
