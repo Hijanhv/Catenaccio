@@ -3,7 +3,7 @@
  *
  * The fair-value engine that prices the book also produces signals: where the
  * model and the market disagree (value), and when the consensus itself moves
- * sharply (sharp). These are the agent's signal-detection output — the input a
+ * sharply (sharp). These are the agent's signal-detection output, the input a
  * human trader or another bot would act on, and the prediction surface that sits
  * upstream of the quotes and the settlement.
  */
@@ -14,7 +14,7 @@ import { MarketId, OUTCOMES, Signal } from "./types";
 const VALUE_THRESHOLD = 0.03;
 /** consensus move between ticks (in probability) at which a sharp signal fires */
 const SHARP_THRESHOLD = 0.04;
-/** above this, a market is resolving (it just settled), not repricing — not a signal */
+/** above this, a market is resolving (it just settled), not repricing, not a signal */
 const SHARP_MAX = 0.8;
 
 /** Outcomes the model rates differently from the de-margined consensus. */

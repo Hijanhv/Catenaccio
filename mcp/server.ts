@@ -51,7 +51,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => ({
     { name: "get_quote", description: "Two-sided bid/ask (decimal odds) Catenaccio is currently quoting for a market.", inputSchema: { type: "object" as const, properties: { market: { type: "string", enum: ["1X2", "OU25", "BTTS"] } }, required: ["market"] } },
     { name: "get_signals", description: "Current prediction signals from the fair-value engine: live win probability, plus model-vs-market value signals and sharp consensus moves.", inputSchema: { type: "object" as const, properties: {} } },
     { name: "get_arb_report", description: "How much latency-arbitrage Catenaccio has prevented, the last reprice latency, and the committed decision-log Merkle root.", inputSchema: { type: "object" as const, properties: {} } },
-    { name: "verify_decision", description: "Return the Merkle inclusion proof for a decision (by seq) and whether it verifies against the committed root — tamper-evidence anyone can check.", inputSchema: { type: "object" as const, properties: { seq: { type: "number" } }, required: ["seq"] } },
+    { name: "verify_decision", description: "Return the Merkle inclusion proof for a decision (by seq) and whether it verifies against the committed root, tamper-evidence anyone can check.", inputSchema: { type: "object" as const, properties: { seq: { type: "number" } }, required: ["seq"] } },
     { name: "run_backtest", description: "Run the agent across N simulated matches and return the P&L distribution + arb-prevented stats.", inputSchema: { type: "object" as const, properties: { matches: { type: "number", description: "default 200" } } } },
     { name: "get_settlement", description: "Play the demo match to full time and return how each market resolves trustlessly: the winning outcome, the Txoracle validate_stat predicate over Merkle-proven scores, and the settled P&L.", inputSchema: { type: "object" as const, properties: {} } },
   ],
@@ -71,7 +71,7 @@ server.setRequestHandler(CallToolRequestSchema, async (req) => {
       minute: Math.round(s.clockSeconds / 60),
       fairProbabilities: book.quotes.map((q) => ({ outcome: q.outcome, fair: +(q.fair * 100).toFixed(1) + "%" })),
       consensus: s.consensus[m].map((c) => +(c * 100).toFixed(1) + "%"),
-      note: "Edge is operational (speed of repricing), not predictive — fair value is anchored to the sharp consensus.",
+      note: "Edge is operational (speed of repricing), not predictive, fair value is anchored to the sharp consensus.",
     });
   }
 
@@ -99,7 +99,7 @@ server.setRequestHandler(CallToolRequestSchema, async (req) => {
     return text({
       finalScore: `${s.homeTeam} ${s.score.home}-${s.score.away} ${s.awayTeam}`,
       settlements: s.settlements.map((r) => ({ market: MARKET_LABEL[r.market], winner: r.winner, predicate: r.predicate, statKeys: r.statKeys, settledPnl: `$${r.pnl.toFixed(0)}`, instruction: r.instruction, program: r.program })),
-      note: "Each outcome is resolved by Txoracle.validate_stat against the Merkle-proven final score, then settled via settle_trade — no trusted oracle.",
+      note: "Each outcome is resolved by Txoracle.validate_stat against the Merkle-proven final score, then settled via settle_trade, no trusted oracle.",
     });
   }
 

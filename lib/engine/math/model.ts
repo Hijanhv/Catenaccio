@@ -124,7 +124,7 @@ export function fairProbs(s: MatchSnapshot, p: ModelParams): MarketProbs {
  * We fix the expected total goals (from the O/U consensus, default 2.7) and solve
  * 1-D for the supremacy that reproduces the consensus home/away balance. This is
  * how we "anchor to the sharp price": at kickoff our model agrees with the market;
- * thereafter it moves only because the *score/clock* moved — never because we
+ * thereafter it moves only because the *score/clock* moved, never because we
  * think we know better.
  */
 export function calibrate(

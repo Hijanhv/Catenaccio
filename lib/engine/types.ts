@@ -165,6 +165,8 @@ export interface EngineSnapshot {
   fees: number;
   risk: RiskState;
   lastRepriceMs: number | null;
+  /** measured wall-clock compute for the last reprice hot path (ms), not asserted */
+  measuredRepriceMs: number | null;
   arbPrevented: number; // $ of latency-arb denied to courtsiders
   arbLeakedBaseline: number; // $ a naive (broadcast-delayed) book would have leaked
   decisionCount: number;

@@ -1,11 +1,11 @@
 /**
- * Replay harness — streams a past/synthetic World Cup match tick-by-tick "as if
+ * Replay harness, streams a past/synthetic World Cup match tick-by-tick "as if
  * live". The hackathon's matches finish after the submission deadline, so a
  * deterministic replay is how judges see the agent working end-to-end, every
  * time, with no live dependency. (In production the very same engine consumes the
- * real TxLINE SSE streams — see lib/txline/.)
+ * real TxLINE SSE streams, see lib/txline/.)
  *
- * The script below is a 3–2 thriller: multiple goals, a red card, and a feed
+ * The script below is a 3-2 thriller: multiple goals, a red card, and a feed
  * drop+recovery so the resilience path is visible on screen.
  */
 
@@ -27,10 +27,10 @@ interface Beat {
   action: "kickoff" | "goal-home" | "goal-away" | "red-home" | "red-away" | "ht" | "fulltime";
 }
 
-// A 2–2 thriller with lead changes: the book's directional exposure flips and
+// A 2-2 thriller with lead changes: the book's directional exposure flips and
 // partially cancels (realistic market-making), so the demo isn't a one-way
 // adverse-selection scoreline. Still dramatic: an upset opener, a red card, a
-// go-ahead goal, and a late equaliser — five reprices in all.
+// go-ahead goal, and a late equaliser, five reprices in all.
 const SCRIPT: Beat[] = [
   { m: 0, action: "kickoff" },
   { m: 9, action: "goal-away" }, // upset opener 0-1
@@ -132,7 +132,7 @@ export function buildMatch(seed = 0xc47e): {
       },
     });
 
-    // consensus catches up ~1.2s of playback after the event — this is the
+    // consensus catches up ~1.2s of playback after the event, this is the
     // window Catenaccio is already repriced and a slow book is still stale.
     if (beat.action.startsWith("goal") || beat.action.startsWith("red")) {
       emitOdds(minute(beat.m) + 1200, gs);

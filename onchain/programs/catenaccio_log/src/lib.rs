@@ -1,11 +1,11 @@
-//! Catenaccio decision-log anchor — OPTIONAL.
+//! Catenaccio decision-log anchor, OPTIONAL.
 //!
 //! This is the *entire* amount of Rust the project needs, and it is optional:
 //! the app already anchors its decision-log Merkle root on-chain via the standard
 //! SPL Memo program (zero Rust), and verifies TxLINE data via TxODDS's existing
 //! `Txoracle` program (zero Rust). Deploy this only if you want a dedicated,
 //! queryable on-chain account that stores the latest root + a monotonic counter
-//! — a slightly more "productionised" audit anchor than a memo.
+//!, a slightly more "productionised" audit anchor than a memo.
 //!
 //! One PDA, one instruction. ~50 lines. Anchor 0.30+.
 

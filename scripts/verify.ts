@@ -5,7 +5,7 @@
  * Fetches a stat and its Merkle proof from /api/scores/stat-validation, then evaluates
  * a predicate against the on-chain daily-scores root with a read-only `.view()` call
  * (no gas, no wallet balance needed). This is the same primitive the agent uses to
- * settle a market — here run for real against live on-chain roots.
+ * settle a market, here run for real against live on-chain roots.
  *
  *   npm run verify
  *   VERIFY_FIXTURE=... VERIFY_SEQ=... VERIFY_STATKEY=... npm run verify
@@ -34,7 +34,7 @@ const node = (n: any) => ({ hash: n.hash, isRightSibling: n.isRightSibling });
 async function main() {
   const jwt = process.env.TXLINE_JWT;
   const tok = process.env.TXLINE_API_TOKEN;
-  if (!jwt || !tok) throw new Error("no TxLINE creds — run `npm run subscribe` first");
+  if (!jwt || !tok) throw new Error("no TxLINE creds, run `npm run subscribe` first");
 
   const res = await fetch(`${API}/scores/stat-validation?fixtureId=${fixtureId}&seq=${seq}&statKey=${statKey}`, {
     headers: { Authorization: `Bearer ${jwt}`, "X-Api-Token": tok },

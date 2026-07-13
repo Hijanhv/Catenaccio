@@ -1,6 +1,6 @@
 /**
  * Normalise raw TxLINE payloads into the engine's EngineEvent shape.
- * The engine only ever sees this clean, ordered event type — live or replayed.
+ * The engine only ever sees this clean, ordered event type, live or replayed.
  */
 
 import { EngineEvent, MarketId } from "../engine/types";

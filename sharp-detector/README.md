@@ -5,7 +5,7 @@ and flags significant in-play odds shifts, then tracks whether each flag predict
 direction. Single compiled binary, autonomous once started.
 
 Rust is the right tool here: a lean, always-on monitor with no runtime, deployable as one
-binary — the kind of thing a trading desk actually leaves running.
+binary, the kind of thing a trading desk actually leaves running.
 
 ## What it does
 
@@ -14,7 +14,7 @@ binary — the kind of thing a trading desk actually leaves running.
   probability moved more than the threshold (default **5pp**), it logs a **sharp move** signal
   to stdout and to `signals.jsonl`.
 - On the next window it checks whether the flagged move held, and prints a running
-  **follow-through hit-rate** — did the signal predict continued direction?
+  **follow-through hit-rate**, did the signal predict continued direction?
 
 ## Run
 
@@ -32,7 +32,7 @@ Knobs (env):
 |---|---|---|
 | `THRESHOLD_PCT` | `5` | move size (in percentage points) that counts as sharp |
 | `WINDOW_SECONDS` | `60` | detection window |
-| `MAX_SECONDS` | — | exit after N seconds (for bounded/demo runs) |
+| `MAX_SECONDS` |, | exit after N seconds (for bounded/demo runs) |
 
 Sharp moves are occasional and happen in-play (a goal repricing the market), so a live "SHARP"
 line appears when a match is in running. The detection logic is unit-tested so it is provable
@@ -53,7 +53,7 @@ Each signal is also appended to `signals.jsonl` for later analysis.
 
 ## Design
 
-- `detect_sharp(prev, cur, threshold)` is a pure, deterministic function (sorted output) — the
+- `detect_sharp(prev, cur, threshold)` is a pure, deterministic function (sorted output), the
   whole detection rule in one testable place.
 - The SSE reader reconnects on drop; the detector loop is independent of it.
 - Stack: `tokio`, `reqwest` (rustls), `serde_json`.

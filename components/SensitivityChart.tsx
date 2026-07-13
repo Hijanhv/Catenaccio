@@ -3,7 +3,7 @@
 import { mulberry32, triangular } from "@/lib/engine/courtsiding";
 
 /**
- * "$ leaked vs. how fast you reprice" — the MEASURED defence, not a staged number.
+ * "$ leaked vs. how fast you reprice", the MEASURED defence, not a staged number.
  * y = avgLeakPerGoal × (fraction of courtsiders whose reaction beats your latency).
  */
 

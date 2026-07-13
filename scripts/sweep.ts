@@ -1,5 +1,5 @@
 /**
- * Sensitivity sweep — proves the "$ prevented" number is MEASURED, not staged.
+ * Sensitivity sweep, proves the "$ prevented" number is MEASURED, not staged.
  *
  * For a representative goal mispricing, we sweep the defender's reprice latency
  * and a distribution of courtsider reaction times, and report how much a book

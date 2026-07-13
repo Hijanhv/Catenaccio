@@ -13,7 +13,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Solana-Devnet-9945FF?style=flat-square&logo=solana&logoColor=white" alt="Solana Devnet" />
   <img src="https://img.shields.io/badge/build-passing-10B981?style=flat-square" alt="build passing" />
-  <img src="https://img.shields.io/badge/tests-31%20passing-10B981?style=flat-square" alt="31 tests passing" />
+  <img src="https://img.shields.io/badge/tests-36%20passing-10B981?style=flat-square" alt="36 tests passing" />
   <img src="https://img.shields.io/badge/Next.js-15-000000?style=flat-square&logo=next.js" alt="Next.js 15" />
   <img src="https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
 </p>
@@ -28,24 +28,47 @@
 
 ---
 
-## What it is
+## What it is, and how it makes money
 
-Catenaccio is a market maker for live football betting markets. It quotes two-sided
-prices on World Cup in-play markets (match result, over/under 2.5 goals, both teams to
-score), reads TxLINE's live odds and scores feeds, and reprices when the match state
-changes. When a goal or card is confirmed it suspends the affected markets, recomputes
-fair value, and reopens — in about 400&nbsp;ms.
+Catenaccio is an in-play market maker, deployable as a standalone tool. It quotes a
+two-sided price on live World Cup markets (match result, over/under 2.5 goals, both teams
+to score), reads TxLINE's live odds and scores, and reprices the instant the match state
+changes. It is not predicting football. It earns the bid/ask spread, match after match,
+and its whole job is to keep doing that without getting picked off.
 
-The edge is operational, not predictive. The agent earns the bid/ask spread and avoids
-being traded against on a stale price. It does not claim to forecast results better than
-the market; it anchors to the market's own consensus and only moves when the score or
-clock moves.
+**Where the income comes from.** Ordinary two-sided flow crosses the spread and the book
+banks the margin. That is the steady edge, and it is why the backtest is positive on
+average with a Sharpe of 3.16. There is no forecast edge, and none is claimed: fair value
+is anchored to TxLINE's own de-margined consensus and only moves when the score or clock
+moves.
+
+**The one real enemy: getting picked off.** When a goal goes in, fair value gaps
+instantly (an outcome can jump from 3.00 to 1.30), but a slow book keeps showing the old
+price for seconds. Whoever saw the goal first, a courtsider at the ground or a latency
+arber on a fast feed, takes that stale price for near risk-free profit. In football
+in-play this is the dominant way a book bleeds, and today only the largest desks react
+fast enough to avoid it.
+
+**The edge is speed, not prediction.** Catenaccio reacts to a cryptographically confirmed
+TxLINE goal in about 400&nbsp;ms: it suspends the affected markets, reprices off its model,
+and reopens, before a courtsider (about 1.5&nbsp;s) or a broadcast-delayed book (5 to
+8&nbsp;s) can act. The stale-price window closes before anyone can trade through it. That
+turns the single biggest loss into roughly zero and leaves the spread as clean edge: about
+$639 of latency arbitrage prevented per match, 99% of matches profitable in the backtest.
+
+**Why a desk can actually deploy it.** Every quote is anchored to authentic TxLINE data
+and provable on Solana, and every position settles against the Merkle-proven final score
+through Txoracle `validate_stat`. The P&L is verifiable, not asserted, which is what a real
+(and regulated) operator needs before it lets an agent quote its book.
+
+In one line: **autonomous spread income, minus the latency-arb bleed, with pricing anyone
+can audit.**
 
 ## How the pieces fit, and why each one exists
 
 Everything hangs off **one fair-value engine**. That engine is the spine; every other
 part of the system either feeds it authentic data or consumes its output. Nothing here
-is a bolt-on — each piece is the answer to a specific problem a real desk has.
+is a bolt-on, each piece is the answer to a specific problem a real desk has.
 
 | Component | Exists because | What it does |
 |---|---|---|
@@ -53,7 +76,7 @@ is a bolt-on — each piece is the answer to a specific problem a real desk has.
 | **Fair-value engine** | You cannot quote, signal, or settle without a number you trust | Time-decaying Poisson / Dixon-Coles, calibrated to the de-margined consensus |
 | **Quotes** | The core job: make a two-sided market and earn the spread | Bid/ask per outcome with inventory skew and a cross-market consistency guard |
 | **~400 ms hot path** | A goal moves the true price seconds before a slow book updates; that gap is where the book loses money | Suspend → reprice → reopen on a confirmed event, before a courtsider can act |
-| **Signals** | The same model that prices the book also measures where it disagrees with the market — that disagreement is a tradeable signal | Surfaces model-vs-market value, sharp consensus moves, and live win probability |
+| **Signals** | The same model that prices the book also measures where it disagrees with the market; that disagreement is a tradeable signal | Surfaces model-vs-market value, sharp consensus moves, and live win probability |
 | **Risk rails** | An autonomous agent that can blow up is not deployable | Exposure caps, drawdown kill-switch, fees, and suspend-on-gap |
 | **Settlement** | A position has to be closed out, and resolving it against the authoritative proof is what makes the P&L credible instead of asserted | Resolves each of the agent's own markets against the Merkle-proven score via Txoracle `validate_stat` |
 | **On-chain anchoring + verification** | A track record nobody can audit is worth little | Anchors the decision-log root and lets anyone verify any fill against its TxLINE proof |
@@ -148,8 +171,8 @@ sequenceDiagram
 
 ## Live TxLINE integration (proven on devnet)
 
-TxLINE is the **primary data source**. The agent consumes two SSE streams — odds
-(`Pct` de-margined consensus) and scores (sub-second confirmed goals and cards) — through
+TxLINE is the **primary data source**. The agent consumes two SSE streams, odds
+(`Pct` de-margined consensus) and scores (sub-second confirmed goals and cards), through
 a resilient client that reconnects, detects `seq` gaps, and backfills the missed interval
 before it resumes quoting. The engine never quotes on stale data.
 
@@ -162,7 +185,7 @@ npm run live        # stream the real TxLINE odds + scores feed into the same en
 
 `npm run subscribe` performs TxLINE's actual auth flow from the quickstart: it funds a
 devnet wallet, calls Txoracle's `subscribe` instruction (the free World Cup tier moves no
-TxL — it just registers the subscription on-chain), gets a guest JWT, signs the activation
+TxL, it just registers the subscription on-chain), gets a guest JWT, signs the activation
 message, and writes the activated token to `.env.local`. `npm run live` then streams real
 packets. A captured run is in [`docs/live-run.txt`](docs/live-run.txt):
 
@@ -170,7 +193,7 @@ packets. A captured run is in [`docs/live-run.txt`](docs/live-run.txt):
 [odds] connected
 [raw odds #1] {"FixtureId":18172280,"MessageId":"1835583265:00003:000334-10021-stab",
               "Bookmaker":"TXLineStablePriceDemargined","SuperOddsType":"1X2_PARTICIPANTS", ...}
- 0' 0-0 | win Home 42% | reprice —ms | feed connected | Sharp move: Away drifting 5.3pp
+ 0' 0-0 | win Home 42% | reprice n/a | feed connected | Sharp move: Away drifting 5.3pp
 ```
 
 Devnet subscribe transaction:
@@ -178,11 +201,20 @@ Devnet subscribe transaction:
 The same deterministic engine runs whether events come from the live socket or the bundled
 replay (`npm run agent`), so the demo is reproducible with no credentials.
 
+**Real odds in, measured reprice out.** `npm run capture:real` records a window of real
+de-margined consensus ticks to [`data/real-odds-capture.json`](data/real-odds-capture.json);
+`npm run replay:real` then runs the engine over them, calibrating fair value off the real
+consensus and timing the suspend, reprice, reopen hot path with `performance.now()`. The
+free tier carried no live score events on the quiet fixtures in our windows, so the goal
+triggers in the replay are labelled synthetic, but the market data and the measured hot path
+are real. The engine's own compute is sub-millisecond; the ~400&nbsp;ms headline is the
+end-to-end reaction budget a deployed operator sees (event confirmation, network delivery,
+and that compute), which is the number a courtsider actually races.
+
 The **deployed dashboard streams it too**: at
 [catenaccio-six.vercel.app](https://catenaccio-six.vercel.app), toggle **Replay → Live** and
 the page connects to a server-side Edge route (`app/api/stream/route.ts`) that mints a guest
-JWT, proxies the real TxLINE odds + scores feed, and forwards normalised events to the browser
-— the API token never leaves the server. Devnet is the 60-second free tier (real data); true
+JWT, proxies the real TxLINE odds + scores feed, and forwards normalised events to the browser. The API token never leaves the server. Devnet is the 60-second free tier (real data); true
 real-time (0 delay) is the mainnet tier.
 
 ## Signals
@@ -190,10 +222,10 @@ real-time (0 delay) is the mainnet tier.
 The fair-value engine does double duty. The number it uses to quote is also a prediction,
 and where it diverges from the market is a signal:
 
-- **Value** — outcomes the model rates differently from the de-margined consensus, in
+- **Value**: outcomes the model rates differently from the de-margined consensus, in
   percentage points (e.g. "Draw underpriced by 4.1pp").
-- **Sharp** — fast moves in the consensus itself, tick over tick.
-- **Live win probability** — the model's current 1X2 read.
+- **Sharp**: fast moves in the consensus itself, tick over tick.
+- **Live win probability**: the model's current 1X2 read.
 
 These are the agent's signal-detection output: the thing a human trader or another bot
 would act on. They are shown live on the dashboard and exposed over MCP (`get_signals`).
@@ -210,7 +242,7 @@ devnet credentials.
 At full time the agent has to close out its own positions. Rather than grade them itself,
 it resolves each market against TxLINE's Merkle-proven final score through Txoracle's
 `validate_stat`, which evaluates a parametric predicate against the signed scores and
-returns a result — so the settled P&L is verifiable, not asserted. Each market maps to a
+returns a result, so the settled P&L is verifiable, not asserted. Each market maps to a
 concrete predicate:
 
 | Market | Winning-outcome predicate (as `validate_stat` evaluates it) |
@@ -219,13 +251,13 @@ concrete predicate:
 | Over/Under 2.5 (over) | `homeGoals + awayGoals > 2` |
 | Both teams to score (yes) | `homeGoals ≥ 1 AND awayGoals ≥ 1` |
 
-This is the agent settling **its own book** against the authoritative proof — no user
+This is the agent settling **its own book** against the authoritative proof, no user
 funds, no escrow, no counterparties. It is the last step of the trading loop, made
 auditable. (`get_settlement` exposes the same over MCP.)
 
 ## On-chain layer, and how much Rust
 
-Everything on-chain is **Solana** — TxLINE is a Solana product (its data is served off-chain
+Everything on-chain is **Solana**, TxLINE is a Solana product (its data is served off-chain
 and anchored on Solana via the `Txoracle` program); there is no separate chain. Two things
 touch it, and neither needs a custom smart contract:
 
@@ -255,9 +287,9 @@ independently verifiable", not "trustless".
 | Criterion | Where it shows up |
 |---|---|
 | Core functionality and data ingestion | Quotes are decisions off the live/replayed TxLINE odds and scores SSE; reconnect and gap backfill; `npm run live` |
-| Autonomous operation | A closed loop with no manual input — ingest, price, quote, manage risk, settle |
-| Logic and code architecture | Deterministic, event-sourced, documented, 31 tests; a model calibrated to consensus |
-| Innovation and novelty | On-chain-verifiable quotes plus a ~400 ms verified-event reprice, with signals exposed over MCP |
+| Autonomous operation | A closed loop with no manual input, ingest, price, quote, manage risk, settle |
+| Logic and code architecture | Deterministic, event-sourced, documented, 36 tests; a model calibrated to consensus |
+| Innovation and novelty | On-chain-verifiable quotes plus a measured verified-event reprice (~400 ms end-to-end, sub-ms engine compute), with signals exposed over MCP |
 | Production readiness | Exposure caps, kill-switch, suspend-on-gap, real fees, a backtest, verifiable settlement, and a working dashboard |
 
 ## Tech stack
@@ -286,12 +318,14 @@ npm run dev        # landing page at :3000; "Launch app" opens the dashboard at 
 npm run agent      # headless run of the same engine (deterministic replay)
 npm run subscribe  # one-time: subscribe to the free World Cup tier on devnet + activate a token
 npm run live       # stream the real TxLINE odds + scores feed into the engine
+npm run capture:real  # record real TxLINE odds ticks to data/real-odds-capture.json
+npm run replay:real   # replay those real odds through the engine, with a measured reprice
 npm run anchor     # anchor a decision-log root on devnet (real Memo tx)
 npm run verify     # verify a real TxLINE stat on devnet via Txoracle.validate_stat
 npm run backtest   # 500 simulated matches
 npm run sweep      # latency-arb sensitivity curve
 npm run mcp        # MCP server over stdio
-npm test           # 31 tests
+npm test           # 36 tests
 ```
 
 Backtest over 500 simulated matches (reproduce with `npm run backtest`):
@@ -300,7 +334,7 @@ Backtest over 500 simulated matches (reproduce with `npm run backtest`):
 mean P&L / match      $2,629        profitable matches    99%
 Sharpe (per match)    3.16          worst / best match    -$1,132 / $4,233
 mean commission/match $668          mean arb prevented    $639 / match
-mean reprice latency  410 ms
+reprice (end-to-end)  ~410 ms       engine hot path       sub-ms (measured)
 ```
 
 A market maker can lose on any single match; the value is the mean over many, plus the
@@ -323,7 +357,7 @@ npm test
 | `crypto` | SHA-256 against NIST vectors; Merkle proofs verify; tampering is detected |
 | `model` | Calibration to consensus; a goal raises P(win); draw rises with time; red-card effect |
 | `courtsiding` | Leak is zero when the reprice beats the attacker; a slow defender leaks |
-| `engine` | Determinism (same seed → same Merkle root and P&L); reprice fires; bounded exposure; clean settlement |
+| `engine` | Determinism (same seed → same Merkle root and P&L); reprice fires; measured hot path stays out of the hashed log; bounded exposure; clean settlement |
 | `settlement` | Predicate mapping per outcome; correct winners; receipts reference Txoracle and the proof; signals fire and stay quiet when model and market agree |
 
 ## Devnet addresses
@@ -351,11 +385,15 @@ npm test
 What worked: one normalised JSON schema across markets, real-time SSE for both odds and
 scores, and a de-margined `Pct` consensus that is a good fair-value anchor. That every
 datum is Merkle-verifiable on-chain made both the audit trail and settlement
-straightforward — `validate_stat` maps cleanly onto market outcomes.
+straightforward, `validate_stat` maps cleanly onto market outcomes.
 
 Friction: the docs resolve on `txline-docs.txodds.com`, which differs from the link in the
 listing; the devnet base URL could be called out more clearly; and a documented SSE
-reconnect and sequence-gap contract would save integrators from reimplementing it.
+reconnect and sequence-gap contract would save integrators from reimplementing it. On the
+free dev tier the `scores/updates` windows came back empty for quiet fixtures, so a live
+goal was not always available to record; a sandbox fixture that emits in-running score
+events on demand would make real-data testing much easier (it is why `npm run replay:real`
+drives its reprices with labelled synthetic goals over real captured odds).
 
 ## Project structure
 

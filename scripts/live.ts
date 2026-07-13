@@ -37,7 +37,7 @@ if (!creds) {
       "  3. Subscribe to the free World Cup tier on devnet, then activate an API token",
       "  4. Set TXLINE_JWT and TXLINE_API_TOKEN, then re-run `npm run live`",
       "",
-      "No account needed to see the agent work — run the deterministic demo: `npm run agent`.",
+      "No account needed to see the agent work, run the deterministic demo: `npm run agent`.",
     ].join("\n"),
   );
   process.exit(0);
@@ -57,7 +57,7 @@ function printState(): void {
   console.log(
     `${String(Math.round(s.clockSeconds / 60)).padStart(2)}' ` +
       `${s.score.home}-${s.score.away} | win ${top.outcome} ${(top.fair * 100).toFixed(0)}% ` +
-      `| reprice ${s.lastRepriceMs ?? "—"}ms | arb prevented $${Math.round(s.arbPrevented)} ` +
+      `| reprice ${s.lastRepriceMs != null ? Math.round(s.lastRepriceMs) + "ms" : "n/a"} | arb prevented $${Math.round(s.arbPrevented)} ` +
       `| feed ${s.feedStatus}${sig ? ` | ${sig.detail}` : ""}`,
   );
 }
@@ -96,7 +96,7 @@ function feed(kind: StreamKind, normalize: (raw: any) => ReturnType<typeof norma
   ).catch((e) => console.error(`[${kind}] stream ended:`, e));
 }
 
-console.error(`Catenaccio live — streaming TxLINE${fixture !== null ? ` fixture #${fixture}` : ""}. Ctrl-C to stop.`);
+console.error(`Catenaccio live, streaming TxLINE${fixture !== null ? ` fixture #${fixture}` : ""}. Ctrl-C to stop.`);
 feed("odds", normalizeOdds);
 feed("scores", normalizeScore);
 
@@ -105,7 +105,7 @@ const liveSeconds = Number(process.env.LIVE_SECONDS ?? 0);
 if (liveSeconds > 0) {
   setTimeout(() => {
     ac.abort();
-    console.error(`\n[summary] raw packets — odds: ${rawSeen.odds}, scores: ${rawSeen.scores}; decisions: ${engine.snapshot().decisionCount}`);
+    console.error(`\n[summary] raw packets, odds: ${rawSeen.odds}, scores: ${rawSeen.scores}; decisions: ${engine.snapshot().decisionCount}`);
     process.exit(0);
   }, liveSeconds * 1000);
 }

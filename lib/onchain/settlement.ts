@@ -5,7 +5,7 @@
  * (TxODDS's deployed program) exposes `validate_stat`, which evaluates exactly such
  * a predicate against the Merkle-proven scores and returns a bool, and
  * `settle_trade`, which releases escrowed funds to the winner once that predicate
- * holds. So the agent does not "decide" who won — it resolves each position against
+ * holds. So the agent does not "decide" who won, it resolves each position against
  * TxLINE's signed data, trustlessly.
  *
  * This module maps each of the agent's markets to the on-chain predicate shape
@@ -19,7 +19,7 @@
 
 import { MarketId, OUTCOMES, SettlementReceipt } from "../engine/types";
 
-/** Txoracle program (devnet) — owner of validate_stat / settle_trade. */
+/** Txoracle program (devnet), owner of validate_stat / settle_trade. */
 export const TXORACLE_PROGRAM = "6pW64gN1s2uqjHkn1unFeEjAwJkPGHoppGvS715wyP2J";
 
 /** validate_stat instruction discriminator, from the published IDL. */

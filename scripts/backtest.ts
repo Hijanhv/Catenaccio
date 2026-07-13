@@ -1,8 +1,8 @@
 /**
- * Backtest — runs the agent across hundreds of independent simulated matches and
+ * Backtest, runs the agent across hundreds of independent simulated matches and
  * reports the P&L distribution. This is the honest answer to "is it profitable?":
  * single matches have variance (you sometimes lay the eventual winner), but the
- * quoted margin makes the MEAN positive, with a healthy Sharpe — and on every
+ * quoted margin makes the MEAN positive, with a healthy Sharpe, and on every
  * match the latency-arb defence holds.
  *
  *   npm run backtest

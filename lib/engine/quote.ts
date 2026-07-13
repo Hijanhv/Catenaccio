@@ -1,10 +1,10 @@
 /**
- * Quote engine — turns fair probabilities into two-sided tradeable prices.
+ * Quote engine, turns fair probabilities into two-sided tradeable prices.
  *
  *  - We quote in decimal odds. Fair odds = 1 / fairProb.
  *  - We apply a configurable margin (half-spread) so we earn on the round-turn.
  *  - The spread WIDENS with uncertainty: early in the match, near our exposure
- *    limits, and immediately after a goal (adverse-selection protection — exactly
+ *    limits, and immediately after a goal (adverse-selection protection, exactly
  *    the moments a desk is most likely to be picked off).
  *  - Quotes are SKEWED by inventory: if we are long an outcome, we shade our
  *    prices to attract flow that flattens the book (classic market-making).
@@ -27,7 +27,7 @@ export const DEFAULT_QUOTE_CONFIG: QuoteConfig = {
 export interface QuoteInputs {
   fairProbs: number[];
   inventory: number[];
-  /** 0..1 — extra spread multiplier (1 = calm, >1 = uncertain/just-after-goal) */
+  /** 0..1, extra spread multiplier (1 = calm, >1 = uncertain/just-after-goal) */
   uncertainty: number;
   cfg: QuoteConfig;
 }

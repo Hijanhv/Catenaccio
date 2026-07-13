@@ -2,7 +2,7 @@
 /**
  * Anchor a real decision-log Merkle root on Solana devnet via the SPL Memo program.
  * Uses the devnet wallet provisioned by scripts/subscribe.ts (./agent-key.json), so
- * the "anchored on Solana" claim is a real, clickable transaction — not a simulation.
+ * the "anchored on Solana" claim is a real, clickable transaction, not a simulation.
  *
  *   npm run anchor
  */
@@ -28,7 +28,7 @@ async function main() {
 
   const res = await anchorRoot(snap.merkleRoot);
   if (res.simulated) {
-    console.log("SIMULATED (no funded wallet found at ./agent-key.json — run `npm run subscribe` first)");
+    console.log("SIMULATED (no funded wallet found at ./agent-key.json, run `npm run subscribe` first)");
     console.log("signature:", res.signature);
   } else {
     console.log("ANCHORED ON DEVNET");

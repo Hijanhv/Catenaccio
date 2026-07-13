@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Catenaccio mark — a red football ringed by grass green. Classic white panels
+ * Catenaccio mark, a red football ringed by grass green. Classic white panels
  * (centre pentagon + seams) keep it unmistakably a football; the green ring is the
  * pitch. Reads crisp from 16px to 160px. ("Catenaccio" = the defensive bolt.)
  */

@@ -34,7 +34,7 @@ const STATS = [
 ];
 
 const COMPARE = [
-  { label: "Reprice after a goal", book: "~5–8 seconds", us: "~400 ms", bookBad: true },
+  { label: "Reprice after a goal", book: "5 to 8 seconds", us: "~400 ms", bookBad: true },
   { label: "Latency-arb leaked / match", book: "~$640", us: "~$0", bookBad: true },
   { label: "Every price verifiable on-chain", book: "✕", us: "✓", bookBad: true },
   { label: "Runs autonomously (no desk babysitting)", book: "✕", us: "✓", bookBad: true },
@@ -50,8 +50,8 @@ const STEPS = [
 
 const FEATURES = [
   { t: "~400 ms reprice", d: "Suspend, reprice, and reopen when a goal is confirmed. Verification and anchoring run in parallel and never block the reprice." },
-  { t: "Courtsider Cam", d: "A side-by-side comparison of a broadcast-delayed book and Catenaccio, with the dollars leaked on each — a measured figure from a calibrated attacker." },
-  { t: "Signals from the model", d: "The same fair value that prices the book flags model-vs-market value and sharp consensus moves — live, and over MCP." },
+  { t: "Courtsider Cam", d: "A side-by-side comparison of a broadcast-delayed book and Catenaccio, with the dollars leaked on each, a measured figure from a calibrated attacker." },
+  { t: "Signals from the model", d: "The same fair value that prices the book flags model-vs-market value and sharp consensus moves, live, and over MCP." },
   { t: "Risk and resilience", d: "Exposure caps, a drawdown kill-switch, real fees, and SSE reconnect with sequence-gap backfill." },
   { t: "Verifiable settlement", d: "Verify any fill against its TxLINE Merkle proof, and settle every market against the on-chain score via Txoracle validate_stat." },
   { t: "MCP server", d: "Exposes the agent's signals as tools another agent can call." },
@@ -81,11 +81,11 @@ export default function Landing() {
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-mut">
             An autonomous football market-making agent that reprices in <strong className="text-ink">~400 ms</strong> the
-            instant a goal is confirmed — so your book is never picked off by latency arbitrage — and proves every price on-chain.
+            instant a goal is confirmed, so your book is never picked off by latency arbitrage. Every price is proven on-chain.
           </p>
           <div className="mt-7 flex flex-wrap items-center gap-3">
-            <Link href="/app" className="btn-primary">Launch the live demo →</Link>
-            <a href="#how" className="btn-ghost">See how it works</a>
+            <Link href="/app" className="btn-primary">Launch app →</Link>
+            <a href="#how" className="btn-ghost">How it works</a>
           </div>
           <div className="mt-9 grid grid-cols-2 gap-4 sm:grid-cols-4">
             {STATS.map((s, i) => (
@@ -118,7 +118,7 @@ export default function Landing() {
         <div className="glass p-7 sm:p-10">
           <div className="text-xs uppercase tracking-[0.2em] text-mut">The problem · in plain English</div>
           <p className="mt-3 max-w-3xl text-xl leading-relaxed text-ink sm:text-2xl">
-            When a goal is scored, the fair price changes <em>instantly</em> — but slow books take seconds to update.
+            When a goal is scored, the fair price changes <em>instantly</em>, but slow books take seconds to update.
             In that gap, someone who saw the goal first grabs the old price for <span className="text-shield">free money</span>.
             It’s called <strong>courtsiding</strong>, and it costs books millions. Today only bet365-tier firms react fast enough.
           </p>
@@ -215,7 +215,7 @@ export default function Landing() {
               ))}
             </div>
             <p className="mt-6 max-w-2xl text-sm text-white/50">
-              The edge is operational — we earn the spread and never get picked off. We never claim to predict football.
+              The edge is operational, we earn the spread and never get picked off. We never claim to predict football.
             </p>
           </div>
         </Reveal>
@@ -227,7 +227,7 @@ export default function Landing() {
           <LogoMark size={52} className="animate-float" />
           <h2 className="text-2xl font-semibold tracking-tight text-ink sm:text-3xl">See it defend a live match</h2>
           <p className="max-w-lg text-mut">Watch the Courtsider Cam, the reprices on each goal, and verify any price on-chain. Runs in the browser, no setup.</p>
-          <Link href="/app" className="btn-primary">Launch the live demo →</Link>
+          <Link href="/app" className="btn-primary">Launch app →</Link>
         </div>
       </section>
 

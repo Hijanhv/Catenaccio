@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 
 /**
- * Hero illustration — a football riding a rising in-play market.
+ * Hero illustration, a football riding a rising in-play market.
  * Candlesticks build in, the trend line draws itself, a live-price marker sweeps
  * the chart, and the ball floats and slowly rotates. One responsive SVG,
  * animated with Framer Motion.
@@ -72,7 +72,7 @@ export function HeroArt() {
           transition={{ duration: 1.6, ease: "easeInOut", delay: 0.5 }}
         />
 
-        {/* candlesticks — wick fades in, body grows up from its base */}
+        {/* candlesticks, wick fades in, body grows up from its base */}
         {CANDLES.map((c, i) => {
           const color = c.up ? "#12924E" : "#E5342B";
           const delay = 0.1 + i * 0.09;
@@ -109,7 +109,7 @@ export function HeroArt() {
         />
       </svg>
 
-      {/* football — floats + slowly rotates, in its own layer (no transform clash) */}
+      {/* football, floats + slowly rotates, in its own layer (no transform clash) */}
       <motion.div
         className="absolute"
         style={{ left: "60%", top: "6%", width: "33%" }}
@@ -137,7 +137,7 @@ export function HeroArt() {
         </motion.svg>
       </motion.div>
 
-      {/* speed badge — pops in, clear of the ball */}
+      {/* speed badge, pops in, clear of the ball */}
       <motion.div
         className="absolute left-[3%] top-[5%] inline-flex items-center gap-2 rounded-full border border-hair bg-white px-3 py-1.5 shadow-card"
         initial={{ opacity: 0, y: -8 }}

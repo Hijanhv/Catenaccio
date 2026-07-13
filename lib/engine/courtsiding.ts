@@ -16,7 +16,7 @@
  *   leaked(cat)  = EV_edge * stake   if attackerReactionMs < repriceMs   (≈ never)
  *
  * EV_edge is the probability the attacker gains by trading the stale price vs the
- * post-goal fair price — i.e. exactly the mispricing the goal created.
+ * post-goal fair price, i.e. exactly the mispricing the goal created.
  */
 
 export interface CourtsidingParams {
@@ -75,7 +75,7 @@ export function mulberry32(seed: number) {
   };
 }
 
-/** Triangular sample in [min,max] with mode — a realistic reaction-time shape. */
+/** Triangular sample in [min,max] with mode, a realistic reaction-time shape. */
 export function triangular(rng: () => number, min: number, mode: number, max: number): number {
   const u = rng();
   const c = (mode - min) / (max - min);

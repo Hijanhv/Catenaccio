@@ -11,7 +11,7 @@ function runMatch(seed: number) {
 }
 
 describe("event-sourced engine", () => {
-  it("is deterministic — same seed gives the same Merkle root and P&L", () => {
+  it("is deterministic, same seed gives the same Merkle root and P&L", () => {
     const a = runMatch(42).snapshot();
     const b = runMatch(42).snapshot();
     expect(a.merkleRoot).toBe(b.merkleRoot);
@@ -25,6 +25,16 @@ describe("event-sourced engine", () => {
     expect(s.lastRepriceMs!).toBeGreaterThan(300);
     expect(s.lastRepriceMs!).toBeLessThan(600);
     expect(s.arbPrevented).toBeGreaterThan(0);
+  });
+
+  it("measures the reprice hot path without leaking it into the hashed log", () => {
+    const s = runMatch(1).snapshot();
+    // real wall-clock compute for the hot path is recorded and sane
+    expect(s.measuredRepriceMs).not.toBeNull();
+    expect(s.measuredRepriceMs!).toBeGreaterThanOrEqual(0);
+    // it is non-deterministic, so it must stay out of the Merkle leaves: same seed,
+    // same root, regardless of the timing measured on this run
+    expect(runMatch(1).snapshot().merkleRoot).toBe(s.merkleRoot);
   });
 
   it("settles to a flat book at full time (no double-counted P&L)", () => {
@@ -47,7 +57,7 @@ describe("event-sourced engine", () => {
 });
 
 describe("quote engine", () => {
-  it("bid is shorter (smaller decimal odds) than ask — we earn the spread", () => {
+  it("bid is shorter (smaller decimal odds) than ask, we earn the spread", () => {
     const q = quoteMarket({ fairProbs: [0.5, 0.3, 0.2], inventory: [0, 0, 0], uncertainty: 1, cfg: DEFAULT_QUOTE_CONFIG });
     for (const o of q) expect(o.bid).toBeLessThan(o.ask);
   });

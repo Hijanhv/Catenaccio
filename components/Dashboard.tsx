@@ -104,7 +104,7 @@ export default function Dashboard() {
           <Panel title="Latency-arb defended" hint="measured, not staged">
             <SensitivityChart avgLeakPerGoal={avgLeakPerGoal} repriceMs={snap.lastRepriceMs ?? 400} />
             <p className="mt-2 text-[11px] leading-relaxed text-mut">
-              A courtsider profits only while a stale price still exists. We remove that window — the area is
+              A courtsider profits only while a stale price still exists. We remove that window, the area is
               what a broadcast-delayed book leaks; the green line is us.
             </p>
           </Panel>
@@ -214,10 +214,13 @@ function Hero({ snap }: { snap: EngineSnapshot }) {
         <div className="border-l border-hair pl-6">
           <div className="text-[11px] uppercase tracking-[0.2em] text-mut">Last reprice latency</div>
           <div className="tnum mt-1 text-4xl font-semibold text-ink">
-            {snap.lastRepriceMs != null ? <AnimatedNumber value={snap.lastRepriceMs} format={(n) => Math.round(n).toString()} duration={0.6} /> : "—"}
+            {snap.lastRepriceMs != null ? <AnimatedNumber value={snap.lastRepriceMs} format={(n) => Math.round(n).toString()} duration={0.6} /> : "n/a"}
             <span className="ml-1 text-lg text-mut">ms</span>
           </div>
           <div className="mt-1 text-sm text-mut">suspend → recompute → reopen</div>
+          <div className="mt-0.5 text-xs text-mut2">
+            engine hot path {snap.measuredRepriceMs != null ? snap.measuredRepriceMs.toFixed(2) : "n/a"} ms measured
+          </div>
         </div>
 
         <div className="border-l border-hair pl-6">
@@ -265,7 +268,7 @@ function CourtsiderCam({ snap }: { snap: EngineSnapshot }) {
             <span className="text-sm font-medium text-attack">Book on a broadcast feed</span>
             <span className="chip border-attack/40 text-attack">~6 s reprice</span>
           </div>
-          <div className="mt-3 text-[11px] uppercase tracking-wider text-mut2">picked off — total leaked</div>
+          <div className="mt-3 text-[11px] uppercase tracking-wider text-mut2">picked off, total leaked</div>
           <AnimatedNumber value={snap.arbLeakedBaseline} format={usd} className="tnum block text-3xl font-semibold text-attack" />
           <div className="mt-2 text-xs text-mut">stale price stays live for seconds → the courtsider profits</div>
         </div>
@@ -289,7 +292,7 @@ function CourtsiderCam({ snap }: { snap: EngineSnapshot }) {
             <span className="text-sm font-medium text-shield">Catenaccio</span>
             <span className="chip border-shield/40 text-shield">{snap.lastRepriceMs ?? 400} ms reprice</span>
           </div>
-          <div className="mt-3 text-[11px] uppercase tracking-wider text-mut2">defended — total leaked</div>
+          <div className="mt-3 text-[11px] uppercase tracking-wider text-mut2">defended, total leaked</div>
           <div className="tnum text-3xl font-semibold text-shield">$0</div>
           <div className="mt-2 text-xs text-mut">suspended + repriced before any courtsider can act</div>
         </div>
@@ -337,8 +340,8 @@ function MarketCard({ book, consensus, index = 0 }: { book: MarketBook; consensu
         {book.quotes.map((q, i) => (
           <div key={q.outcome} className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-2">
             <span className="truncate text-sm">{q.outcome}</span>
-            <span className="text-right text-sm text-shield">{book.suspended ? "—" : <FlashNum v={q.bid.toFixed(2)} />}</span>
-            <span className="text-right text-sm text-attack/90">{book.suspended ? "—" : <FlashNum v={q.ask.toFixed(2)} />}</span>
+            <span className="text-right text-sm text-shield">{book.suspended ? "·" : <FlashNum v={q.bid.toFixed(2)} />}</span>
+            <span className="text-right text-sm text-attack/90">{book.suspended ? "·" : <FlashNum v={q.ask.toFixed(2)} />}</span>
             <span className="tnum text-right text-xs text-mut" title={`consensus ${pct(consensus[i] ?? 0)}`}>{pct(q.fair)}</span>
           </div>
         ))}
@@ -465,7 +468,7 @@ function SettlementPanel({ snap }: { snap: EngineSnapshot }) {
       {!settled ? (
         <div className="text-xs leading-relaxed text-mut">
           At full time each market resolves against TxLINE&apos;s Merkle-proven final score through Txoracle&apos;s{" "}
-          <span className="font-mono text-ink">validate_stat</span> — no trusted oracle, no manual grading. Positions
+          <span className="font-mono text-ink">validate_stat</span>, no trusted oracle, no manual grading. Positions
           then settle on-chain via <span className="font-mono text-ink">settle_trade</span>.
         </div>
       ) : (
@@ -637,10 +640,10 @@ function VerifyModal({ fill, snap, engineRef, onClose }: { fill: Fill; snap: Eng
         </div>
 
         <div className={`mt-4 flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-medium ${verified ? "bg-shield/10 text-shield" : "bg-attack/10 text-attack"}`}>
-          {verified ? "✓ VERIFIED — tamper-evident & independently checkable" : "could not verify"}
+          {verified ? "✓ VERIFIED, tamper-evident & independently checkable" : "could not verify"}
         </div>
         <p className="mt-2 text-center text-[10px] text-mut2">
-          A proof confirms the data is authentic and unaltered — not that a decision was “optimal”. Tamper-evident, not “trustless”.
+          A proof confirms the data is authentic and unaltered, not that a decision was “optimal”. Tamper-evident, not “trustless”.
         </p>
       </motion.div>
     </motion.div>

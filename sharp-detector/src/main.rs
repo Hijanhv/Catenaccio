@@ -1,9 +1,9 @@
-//! Sharp Movement Detector — a standalone TxLINE agent.
+//! Sharp Movement Detector, a standalone TxLINE agent.
 //!
 //! Streams the live TxLINE odds feed, and every 60 seconds compares each market's
 //! de-margined consensus to the previous window. When an outcome's implied
 //! probability shifts more than the threshold, it logs a "sharp move" signal, and
-//! on the next window it checks whether the move held — a running follow-through
+//! on the next window it checks whether the move held, a running follow-through
 //! hit-rate that says whether the signal predicted continued direction.
 //!
 //! It authorises with the same free World Cup devnet tier as the rest of the
@@ -201,7 +201,7 @@ async fn run(api: String, auth: String, token: String) -> Result<()> {
     let threshold: f64 = std::env::var("THRESHOLD_PCT").ok().and_then(|s| s.parse::<f64>().ok()).unwrap_or(5.0) / 100.0;
     let max_secs: Option<u64> = std::env::var("MAX_SECONDS").ok().and_then(|s| s.parse().ok());
     println!(
-        "Sharp Movement Detector — TxLINE devnet. Threshold {:.1}%, window {}s. Ctrl-C to stop.",
+        "Sharp Movement Detector, TxLINE devnet. Threshold {:.1}%, window {}s. Ctrl-C to stop.",
         threshold * 100.0,
         window_secs
     );
@@ -242,7 +242,7 @@ async fn run(api: String, auth: String, token: String) -> Result<()> {
         let snapshot = state.lock().unwrap().clone();
         let now = chrono::Utc::now();
 
-        // 1) resolve last window's signals — did the flagged move hold?
+        // 1) resolve last window's signals, did the flagged move hold?
         for (key, p) in pending.drain() {
             if let Some(cur) = snapshot.get(&key) {
                 total += 1;

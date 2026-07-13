@@ -1,0 +1,143 @@
+{
+  "apiUrl": "https://txline-dev.txodds.com/api",
+  "fixtureId": 18237038,
+  "capturedAt": "2026-07-13T12:49:06.768Z",
+  "seconds": 70,
+  "rawSamples": [
+    {
+      "FixtureId": 18237038,
+      "MessageId": "1837598073:00003:000206-10021-stab",
+      "Ts": 1783946887586,
+      "Bookmaker": "TXLineStablePriceDemargined",
+      "BookmakerId": 10021,
+      "SuperOddsType": "OVERUNDER_PARTICIPANT_GOALS",
+      "GameState": null,
+      "InRunning": false,
+      "MarketParameters": "line=2.5",
+      "MarketPeriod": null,
+      "PriceNames": [
+        "over",
+        "under"
+      ],
+      "Prices": [
+        1954,
+        2048
+      ],
+      "Pct": [
+        "51.177",
+        "48.828"
+      ]
+    },
+    {
+      "FixtureId": 18237038,
+      "MessageId": "1837598073:00003:000205-10021-stab",
+      "Ts": 1783946887586,
+      "Bookmaker": "TXLineStablePriceDemargined",
+      "BookmakerId": 10021,
+      "SuperOddsType": "ASIANHANDICAP_PARTICIPANT_GOALS",
+      "GameState": null,
+      "InRunning": false,
+      "MarketParameters": "line=0",
+      "MarketPeriod": "half=1",
+      "PriceNames": [
+        "part1",
+        "part2"
+      ],
+      "Prices": [
+        1780,
+        2283
+      ],
+      "Pct": [
+        "56.180",
+        "43.802"
+      ]
+    },
+    {
+      "Ts": 1783946892
+    }
+  ],
+  "odds": [
+    {
+      "kind": "odds",
+      "fixtureId": 18237038,
+      "messageId": "1837598073:00003:000206-10021-stab",
+      "ts": 1783946887586,
+      "market": "OU25",
+      "inRunning": false,
+      "gameState": 0,
+      "consensus": [
+        0.511744412779361,
+        0.488255587220639
+      ]
+    },
+    {
+      "kind": "odds",
+      "fixtureId": 18237038,
+      "messageId": "1837598088:00003:000301-10021-stab",
+      "ts": 1783946895532,
+      "market": "1X2",
+      "inRunning": false,
+      "gameState": 0,
+      "consensus": [
+        0.3145883129481653,
+        0.4392095288575972,
+        0.24620215819423746
+      ]
+    },
+    {
+      "kind": "odds",
+      "fixtureId": 18237038,
+      "messageId": "1837598106:00003:000171-10021-stab",
+      "ts": 1783946905531,
+      "market": "1X2",
+      "inRunning": false,
+      "gameState": 0,
+      "consensus": [
+        0.31465685343146566,
+        0.43916560834391655,
+        0.24617753822461771
+      ]
+    },
+    {
+      "kind": "odds",
+      "fixtureId": 18237038,
+      "messageId": "1837598125:00003:000359-10021-stab",
+      "ts": 1783946918000,
+      "market": "1X2",
+      "inRunning": false,
+      "gameState": 0,
+      "consensus": [
+        0.41051410514105147,
+        0.2928329283292833,
+        0.29665296652966533
+      ]
+    },
+    {
+      "kind": "odds",
+      "fixtureId": 18237038,
+      "messageId": "1837598125:00003:000369-10021-stab",
+      "ts": 1783946918000,
+      "market": "1X2",
+      "inRunning": false,
+      "gameState": 0,
+      "consensus": [
+        0.3145883129481653,
+        0.4392095288575972,
+        0.24620215819423746
+      ]
+    },
+    {
+      "kind": "odds",
+      "fixtureId": 18237038,
+      "messageId": "1837598125:00003:000379-10021-stab",
+      "ts": 1783946918000,
+      "market": "OU25",
+      "inRunning": false,
+      "gameState": 0,
+      "consensus": [
+        0.5114946551603452,
+        0.4885053448396548
+      ]
+    }
+  ]
+}

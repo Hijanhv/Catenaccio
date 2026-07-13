@@ -5,15 +5,15 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // "pitch daylight" surface ramp — a whisper of grass in the paper
+        // "pitch daylight" surface ramp, a whisper of grass in the paper
         base: "#F3F8F3",
         panel: "#FFFFFF",
         panel2: "#EBF2EC",
         hair: "rgba(12,32,18,0.09)",
         // football signature: grass green = us/defended/profit, ball red = threat/leak + energy
-        shield: "#12924E", // grass green — our edge / up
+        shield: "#12924E", // grass green, our edge / up
         shield2: "#0C7A3E",
-        attack: "#E5342B", // ball red — courtsider / leak / down + bold accent
+        attack: "#E5342B", // ball red, courtsider / leak / down + bold accent
         attack2: "#C21E1C",
         gold: "#C08A1E",
         ink: "#0C1A10", // near-black, faintly green

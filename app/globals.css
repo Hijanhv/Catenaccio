@@ -18,7 +18,7 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* soft "pitch daylight" wash — grass green + a hint of ball red */
+/* soft "pitch daylight" wash, grass green + a hint of ball red */
 body::before {
   content: "";
   position: fixed;

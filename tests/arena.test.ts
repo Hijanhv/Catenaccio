@@ -3,7 +3,7 @@ import { runArenaMatch, runTournament, STRATEGIES } from "@/lib/arena/arena";
 import { generateRandomMatch } from "@/lib/engine/simulate";
 
 describe("agent vs agent arena", () => {
-  it("is deterministic — same seeds give the same standings", () => {
+  it("is deterministic, same seeds give the same standings", () => {
     const a = runTournament(80, 5000);
     const b = runTournament(80, 5000);
     expect(a).toEqual(b);

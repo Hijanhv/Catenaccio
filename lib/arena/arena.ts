@@ -10,8 +10,8 @@
  * When a goal is confirmed the true price has moved, but the market consensus only
  * catches up on the next tick. An agent that acts on the goal itself buys the stale
  * price (positive expected value); one that waits for the consensus gets no edge;
- * one that fades the move loses. So the Arena is a live demonstration that speed —
- * not prediction — is where the money is.
+ * one that fades the move loses. So the Arena is a live demonstration that speed,
+ * not prediction, is where the money is.
  */
 
 import { EngineEvent, MarketId } from "../engine/types";
@@ -52,7 +52,7 @@ type React = (c: Ctx) => Bet | null;
 /** The five strategies, as pure reaction functions. */
 export const STRATEGIES: Record<string, React> = {
   // Reacts to the goal itself, buying the still-stale 1X2 price. This is the
-  // latency-arb edge — positive EV, because the true price has already moved.
+  // latency-arb edge, positive EV, because the true price has already moved.
   Reflex: (c) => {
     if (c.kind !== "goal" || c.market !== "1X2" || !c.goalTeam) return null;
     const idx = c.goalTeam === "home" ? 0 : 2;

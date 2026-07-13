@@ -2,7 +2,7 @@
   "name": "catenaccio",
   "version": "0.1.0",
   "private": true,
-  "description": "Autonomous in-play football market-making agent on TxLINE's verified feed — reprices in ~400ms so a book is never picked off by latency arbitrage, and proves every price on-chain.",
+  "description": "Autonomous in-play football market-making agent on TxLINE's verified feed, reprices in ~400ms so a book is never picked off by latency arbitrage, and proves every price on-chain.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -17,6 +17,8 @@
     "arena": "tsx scripts/arena.ts",
     "sweep": "tsx scripts/sweep.ts",
     "backtest": "tsx scripts/backtest.ts",
+    "capture:real": "tsx scripts/replay-real.ts --capture",
+    "replay:real": "tsx scripts/replay-real.ts",
     "demo": "tsx scripts/agent.ts --demo",
     "mcp": "tsx mcp/server.ts",
     "test": "vitest run",

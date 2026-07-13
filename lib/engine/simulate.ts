@@ -4,7 +4,7 @@
  * Goals are drawn from the SAME Poisson process the model prices against, so the
  * test is honest: the agent's fair value is unbiased and its only structural edge
  * is the quoted margin + not getting picked off. Across many matches that yields a
- * positive mean P&L with single-match variance — which is exactly what we claim.
+ * positive mean P&L with single-match variance, which is exactly what we claim.
  */
 
 import { EngineEvent, MarketId } from "./types";

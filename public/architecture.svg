@@ -49,7 +49,7 @@
 
   <!-- S3 Brain -->
   <rect x="462" y="100" width="230" height="320" rx="14" fill="#F6F8FB" stroke="rgba(10,160,110,0.28)"/>
-  <text x="577" y="125" text-anchor="middle" fill="#0AA06E" font-size="11" letter-spacing="1.5">THE BRAIN — deterministic</text>
+  <text x="577" y="125" text-anchor="middle" fill="#0AA06E" font-size="11" letter-spacing="1.5">THE BRAIN · deterministic</text>
   <rect x="478" y="138" width="198" height="42" rx="9" fill="#fff" stroke="rgba(12,18,32,0.10)"/>
   <text x="577" y="164" text-anchor="middle" fill="#0B0F16" font-size="12">Fair value · Poisson / Dixon-Coles</text>
   <rect x="478" y="186" width="198" height="42" rx="9" fill="#fff" stroke="rgba(12,18,32,0.10)"/>

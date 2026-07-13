@@ -1,5 +1,5 @@
 /**
- * Headless autonomous agent — the SAME engine the dashboard runs, but driven from
+ * Headless autonomous agent, the SAME engine the dashboard runs, but driven from
  * the command line with zero human input. This is the "Autonomous Operation"
  * proof: ingest → model → quote → detect event → reprice → manage risk → settle,
  * all on its own. In production this loop consumes the live TxLINE SSE streams
@@ -47,7 +47,7 @@ async function main() {
   console.log(`  peak exposure used   ${money(peakExposure)}   kill-switch: ${s.risk.killSwitch ? "TRIPPED" : "armed"}`);
   console.log(`  decisions anchored   ${s.decisionCount}`);
   console.log(`  merkle root          ${root}`);
-  console.log(`  on-chain anchor      ${anchor.signature}${anchor.simulated ? "  (simulated — no funded wallet)" : `  (${anchor.cluster})`}`);
+  console.log(`  on-chain anchor      ${anchor.signature}${anchor.simulated ? "  (simulated, no funded wallet)" : `  (${anchor.cluster})`}`);
   console.log(`  ─────────────────────────────────────────────────────────\n`);
 }
 
