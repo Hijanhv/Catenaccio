@@ -237,6 +237,21 @@ predict continued direction?). It uses Rust because that is the right tool for a
 always-on monitor a desk leaves running; it is unit-tested (`cargo test`) and reuses the same
 devnet credentials.
 
+## Agent vs Agent Arena
+
+The track's second starter idea is built too. `npm run arena` runs a tournament of seeded
+strategy agents over many matches on the same TxLINE-shaped feed and prints a leaderboard
+(P&L, ROI, hit-rate, bet count). The agent that reacts fastest to goals wins; a strategy that
+fades the move loses. It is the whole thesis staged as a competition: speed, not prediction,
+is where the edge is. The final standings digest is anchored on Solana devnet (a real Memo
+transaction when a funded devnet wallet is present, simulated otherwise), so who won is
+tamper-evident. The tournament is deterministic and unit-tested.
+
+```bash
+npm run arena          # 200 matches (default)
+npm run arena -- 500   # more matches
+```
+
 ## Settlement
 
 At full time the agent has to close out its own positions. Rather than grade them itself,
@@ -324,6 +339,7 @@ npm run anchor     # anchor a decision-log root on devnet (real Memo tx)
 npm run verify     # verify a real TxLINE stat on devnet via Txoracle.validate_stat
 npm run backtest   # 500 simulated matches
 npm run sweep      # latency-arb sensitivity curve
+npm run arena      # Agent vs Agent Arena tournament (standings anchored on devnet)
 npm run mcp        # MCP server over stdio
 npm test           # 36 tests
 ```

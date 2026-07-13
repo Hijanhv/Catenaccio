@@ -49,12 +49,15 @@ const STEPS = [
 ];
 
 const FEATURES = [
-  { t: "~400 ms reprice", d: "Suspend, reprice, and reopen when a goal is confirmed. Verification and anchoring run in parallel and never block the reprice." },
+  { t: "Measured ~400 ms reprice", d: "Suspend, reprice, and reopen the instant a goal is confirmed. The engine hot path is measured (sub-millisecond); ~400 ms is the end-to-end reaction budget. Verification and anchoring run in parallel and never block it." },
   { t: "Courtsider Cam", d: "A side-by-side comparison of a broadcast-delayed book and Catenaccio, with the dollars leaked on each, a measured figure from a calibrated attacker." },
   { t: "Signals from the model", d: "The same fair value that prices the book flags model-vs-market value and sharp consensus moves, live, and over MCP." },
   { t: "Risk and resilience", d: "Exposure caps, a drawdown kill-switch, real fees, and SSE reconnect with sequence-gap backfill." },
   { t: "Verifiable settlement", d: "Verify any fill against its TxLINE Merkle proof, and settle every market against the on-chain score via Txoracle validate_stat." },
   { t: "MCP server", d: "Exposes the agent's signals as tools another agent can call." },
+  { t: "Sharp Movement Detector", d: "A standalone Rust binary that streams the odds feed and flags sharp in-play moves every 60 seconds (default 5pp), then tracks a follow-through hit-rate. Autonomous and unit-tested." },
+  { t: "Agent vs Agent Arena", d: "Seeded strategies compete over a tournament on the same feed. The fastest-reacting agent wins, and the final standings are anchored on Solana devnet." },
+  { t: "Real-data replay", d: "Replays real captured TxLINE odds through the same engine and times the reprice with performance.now, so the number is measured, not asserted. Reproducible with no credentials." },
 ];
 
 export default function Landing() {
@@ -167,6 +170,7 @@ export default function Landing() {
       {/* ── features ── */}
       <section className="mx-auto max-w-6xl px-5 py-8">
         <h2 className="text-center text-2xl font-semibold tracking-tight text-ink sm:text-3xl">What&apos;s inside</h2>
+        <p className="mx-auto mt-3 max-w-2xl text-center text-mut">Every starter idea in the track, on one engine: an in-play market maker, a sharp-move detector, and an agent-vs-agent arena.</p>
         <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {FEATURES.map((f, i) => (
             <motion.div
