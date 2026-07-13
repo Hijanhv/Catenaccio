@@ -83,11 +83,7 @@ export default function Landing() {
             An autonomous football market-making agent that reprices in <strong className="text-ink">~400 ms</strong> the
             instant a goal is confirmed, so your book is never picked off by latency arbitrage. Every price is proven on-chain.
           </p>
-          <div className="mt-7 flex flex-wrap items-center gap-3">
-            <Link href="/app" className="btn-primary">Launch app →</Link>
-            <a href="#how" className="btn-ghost">How it works</a>
-          </div>
-          <div className="mt-9 grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
             {STATS.map((s, i) => (
               <motion.div
                 key={s.k}
