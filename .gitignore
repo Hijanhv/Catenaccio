@@ -14,3 +14,6 @@ tsconfig.tsbuildinfo
 sharp-detector/target/
 sharp-detector/signals.jsonl
 signals.jsonl
+
+# video production working files (media, API key, recordings)
+video/

@@ -313,8 +313,8 @@ independently verifiable", not "trustless".
 |---|---|---|
 | Agent core | TypeScript, no runtime deps | Deterministic event-sourced engine; runs in the browser and in Node |
 | Model | Poisson / Dixon-Coles | In-play fair value, calibrated to TxLINE consensus |
-| Web | Next.js 15 (App Router), React 19 | Landing page and live dashboard |
-| UI | Tailwind CSS, Framer Motion | Light theme |
+| Web | Next.js 15 (App Router), React 19 | Landing page (animated 3D football pitch) and live dashboard |
+| UI | Tailwind CSS, Framer Motion, Three.js (react-three-fiber) | Motion design, the 3D pitch hero, light theme |
 | Data | TxLINE SSE (odds + scores) | Live, granular match data |
 | On-chain | @solana/web3.js, SPL Memo, TxODDS Txoracle | Verify data, resolve outcomes, anchor the audit trail |
 | Crypto | SHA-256 + Merkle tree (in-repo) | Inclusion proofs |
