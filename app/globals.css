@@ -82,15 +82,9 @@ body::after {
     background-size: 220% auto;
     animation: gradientShift 10s ease infinite;
   }
-  /* primary CTA = the ball, in red */
+  /* primary CTA — static grass green, no animation */
   .btn-primary {
-    @apply relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full bg-attack px-5 py-2.5 text-sm font-semibold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-attack2 hover:shadow-lift active:scale-[0.98];
-  }
-  /* moving highlight sweep for primary buttons */
-  .btn-primary::after {
-    content: "";
-    @apply pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 skew-x-[-20deg] bg-white/25;
-    animation: sheen 3s ease-in-out infinite;
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-shield px-5 py-2.5 text-sm font-semibold text-white shadow-soft transition-colors hover:bg-shield2;
   }
   .btn-ghost {
     @apply inline-flex items-center justify-center gap-2 rounded-full border border-hair bg-white px-5 py-2.5 text-sm font-semibold text-ink transition hover:-translate-y-0.5 hover:bg-panel2 hover:shadow-soft active:scale-[0.98];
