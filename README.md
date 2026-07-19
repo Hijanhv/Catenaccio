@@ -1,7 +1,5 @@
 <p align="center">
-  <a href="https://youtu.be/_Xxgt5fyRn0" title="Watch the Catenaccio demo video">
-    <img src="./public/banner.svg" alt="Catenaccio — watch the demo video" width="100%" />
-  </a>
+  <img src="./public/banner.svg" alt="Catenaccio" width="100%" />
 </p>
 
 <h1 align="center">Catenaccio</h1>
@@ -28,6 +26,14 @@
   <b>▶ Demo video:</b> <a href="https://youtu.be/_Xxgt5fyRn0">youtu.be/_Xxgt5fyRn0</a>
   &nbsp;·&nbsp;
   <b>Live demo:</b> <a href="https://catenaccio-six.vercel.app">catenaccio-six.vercel.app</a>
+</p>
+
+<p align="center">
+  <a href="https://youtu.be/_Xxgt5fyRn0" title="Watch the full demo on YouTube">
+    <img src="./public/demo-preview.gif" alt="Catenaccio demo preview — click to watch the full video on YouTube" width="80%" />
+  </a>
+  <br />
+  <sub><a href="https://youtu.be/_Xxgt5fyRn0"><b>▶ Watch the full 3-minute demo on YouTube</b></a></sub>
 </p>
 
 ---
