@@ -29,13 +29,11 @@
 </p>
 
 <p align="center">
-  <a href="https://youtu.be/_Xxgt5fyRn0">
-    <img src="./public/demo-preview.gif" alt="Catenaccio demo — click to watch the full video" width="80%" />
-  </a>
+  <video src="https://github.com/user-attachments/assets/8905a5e2-fe66-4d1e-b571-88d0a3044c93" controls muted playsinline width="80%"></video>
 </p>
 
 <p align="center">
-  <sub>▶ Click the preview to watch the full demo on <a href="https://youtu.be/_Xxgt5fyRn0"><b>YouTube</b></a> &nbsp;·&nbsp; or open the <a href="https://catenaccio-six.vercel.app/catenaccio-demo.mp4">raw MP4</a></sub>
+  <sub>▶ Demo plays inline above (press play, turn sound on) &nbsp;·&nbsp; also on <a href="https://youtu.be/_Xxgt5fyRn0"><b>YouTube</b></a> &nbsp;·&nbsp; <a href="https://catenaccio-six.vercel.app">live demo</a></sub>
 </p>
 
 ---
