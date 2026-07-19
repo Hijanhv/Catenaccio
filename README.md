@@ -29,11 +29,15 @@
 </p>
 
 <p align="center">
+  <video src="https://github.com/Hijanhv/Catenaccio/raw/main/media/catenaccio-demo.mp4" controls muted width="80%"></video>
+</p>
+
+<p align="center">
   <a href="https://youtu.be/_Xxgt5fyRn0" title="Watch the full demo on YouTube">
-    <img src="./public/demo-preview.gif" alt="Catenaccio demo preview — click to watch the full video on YouTube" width="80%" />
+    <img src="./public/demo-preview.gif" alt="Catenaccio demo preview — click to watch the full video on YouTube" width="70%" />
   </a>
   <br />
-  <sub><a href="https://youtu.be/_Xxgt5fyRn0"><b>▶ Watch the full 3-minute demo on YouTube</b></a></sub>
+  <sub>▶ If the player above doesn't load, <a href="https://youtu.be/_Xxgt5fyRn0"><b>watch the full 3-minute demo on YouTube</b></a></sub>
 </p>
 
 ---
