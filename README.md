@@ -12,8 +12,8 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Solana-Devnet-9945FF?style=flat-square&logo=solana&logoColor=white" alt="Solana Devnet" />
-  <img src="https://img.shields.io/badge/build-passing-10B981?style=flat-square" alt="build passing" />
-  <img src="https://img.shields.io/badge/tests-36%20passing-10B981?style=flat-square" alt="36 tests passing" />
+  <img src="./public/badge-build.svg" alt="build passing" />
+  <img src="./public/badge-tests.svg" alt="36 tests passing" />
   <img src="https://img.shields.io/badge/Next.js-15-000000?style=flat-square&logo=next.js" alt="Next.js 15" />
   <img src="https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
 </p>

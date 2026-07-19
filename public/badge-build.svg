@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="92" height="20" role="img" aria-label="build: passing">
+  <title>build: passing</title>
+  <g shape-rendering="crispEdges">
+    <rect width="39" height="20" fill="#555"/>
+    <rect x="39" width="53" height="20" fill="#10b981"/>
+  </g>
+  <g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" font-size="11">
+    <text x="19.5" y="15" fill="#010101" fill-opacity=".3">build</text>
+    <text x="19.5" y="14">build</text>
+    <text x="65.5" y="15" fill="#010101" fill-opacity=".3">passing</text>
+    <text x="65.5" y="14">passing</text>
+  </g>
+</svg>
