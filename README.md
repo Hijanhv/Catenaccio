@@ -1,5 +1,7 @@
 <p align="center">
-  <img src="./public/banner.svg" alt="Catenaccio" width="100%" />
+  <a href="https://youtu.be/_Xxgt5fyRn0" title="Watch the Catenaccio demo video">
+    <img src="./public/banner.svg" alt="Catenaccio — watch the demo video" width="100%" />
+  </a>
 </p>
 
 <h1 align="center">Catenaccio</h1>
@@ -23,6 +25,8 @@
 </p>
 
 <p align="center">
+  <b>▶ Demo video:</b> <a href="https://youtu.be/_Xxgt5fyRn0">youtu.be/_Xxgt5fyRn0</a>
+  &nbsp;·&nbsp;
   <b>Live demo:</b> <a href="https://catenaccio-six.vercel.app">catenaccio-six.vercel.app</a>
 </p>
 
